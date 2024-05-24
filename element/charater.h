@@ -32,7 +32,7 @@ typedef struct _Character
 } Character;
 Elements *New_Character(int label);
 void _Character_update_position(Elements *self, int dx, int dy);
-void Character_update(Elements *self);
+void Character_update(Elements *self, Elements *target);
 void Character_interact(Elements *self, Elements *target);
 void Character_draw(Elements *self);
 void Character_destory(Elements *self);

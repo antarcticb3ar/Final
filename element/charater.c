@@ -1,4 +1,5 @@
 #include "charater.h"
+#include "Obstacle.h"
 #include "../scene/sceneManager.h"
 #include "projectile.h"
 #include "../shapes/Rectangle.h"
@@ -41,6 +42,7 @@ Elements *New_Character(int label)
     // initial the animation component
     pDerivedObj->state = STOP;
     pDerivedObj->new_proj = false;
+    pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
     pObj->Draw = Character_draw;
@@ -49,108 +51,116 @@ Elements *New_Character(int label)
     pObj->Destroy = Character_destory;
     return pObj;
 }
-void Character_update(Elements *self)
+void Character_update(Elements *self, Elements *tar)
 {
     // use the idea of finite state machine to deal with different state
-     Character *chara = ((Character *)(self->pDerivedObj));
-    if (chara->state == STOP)
+    Character *chara = ((Character *)(self->pDerivedObj));
+    Obstacle *obstacle = ((Obstacle *)(tar->pDerivedObj));
+    if(obstacle->hitbox->overlap(obstacle->hitbox, chara->hitbox)) 
     {
-        if (key_state[ALLEGRO_KEY_SPACE])
-        {
-            chara->state = ATK;
-        }
-        else if (key_state[ALLEGRO_KEY_S])
-        {
-            chara->dir1 = false;
-            chara->dir2 = false;
-            chara->state = MOVE;
-        }
-        else if (key_state[ALLEGRO_KEY_W])
-        {
-            chara->dir1 = false;
-            chara->dir2 = true;
-            chara->state = MOVE;
-        }
-        else if (key_state[ALLEGRO_KEY_A])
-        {
-            chara->dir1 = false;
-            chara->dir2 = false;
-            chara->state = MOVE;
-        }
-        else if (key_state[ALLEGRO_KEY_D])
-        {
-            chara->dir1 = true;
-            chara->dir2 = false;
-            chara->state = MOVE;
-        }
-        else
-        {
-            chara->state = STOP;
-        }
+        chara->state = STOP;
     }
-    else if (chara->state == MOVE)
-    {
-        if (key_state[ALLEGRO_KEY_SPACE])
+    else
+    {    
+        if (chara->state == STOP)
         {
-            chara->state = ATK;
-        }
-        else if (key_state[ALLEGRO_KEY_A])
-        {
-            chara->dir1 = false;
-            chara->dir2 = false;
-            _Character_update_position(self, -5, 0);
-            chara->state = MOVE;
-        }
-        else if (key_state[ALLEGRO_KEY_S])
-        {
-            chara->dir1 = false;
-            chara->dir2 = false;
-            _Character_update_position(self, 0, 5);
-            chara->state = MOVE;
-        }
-        else if (key_state[ALLEGRO_KEY_W])
-        {
-            chara->dir1 = false;
-            chara->dir2 = true;
-            _Character_update_position(self, 0, -5);
-            chara->state = MOVE;
-        }
-        else if (key_state[ALLEGRO_KEY_D])
-        {
-            chara->dir1 = true;
-            chara->dir2 = false;
-            _Character_update_position(self, 5, 0);
-            chara->state = MOVE;
-        }
-        if (chara->gif_status[chara->state]->done)
-            chara->state = STOP;
-    }
-    else if (chara->state == ATK)
-    {
-        if (chara->gif_status[chara->state]->done)
-        {
-            chara->state = STOP;
-            chara->new_proj = false;
-        }
-        if (chara->gif_status[ATK]->display_index == 2 && chara->new_proj == false)
-        {
-            Elements *pro;
-            if (chara->dir1)
+            if (key_state[ALLEGRO_KEY_SPACE])
             {
-                pro = New_Projectile(Projectile_L,
-                                     chara->x + chara->width - 100,
-                                     chara->y + 10,
-                                     5);
+                chara->state = ATK;
+            }
+            else if (key_state[ALLEGRO_KEY_S])
+            {
+                chara->dir1 = false;
+                chara->dir2 = false;
+                chara->state = MOVE;
+            }
+            else if (key_state[ALLEGRO_KEY_W])
+            {
+                chara->dir1 = false;
+                chara->dir2 = true;
+                chara->state = MOVE;
+            }
+            else if (key_state[ALLEGRO_KEY_A])
+            {
+                chara->dir1 = false;
+                chara->dir2 = false;
+                chara->state = MOVE;
+            }
+            else if (key_state[ALLEGRO_KEY_D])
+            {
+                chara->dir1 = true;
+                chara->dir2 = false;
+                chara->state = MOVE;
             }
             else
             {
-                pro = New_Projectile(Projectile_L,
-                                     chara->x - 50,
-                                     chara->y + 10,
-                                     -5);
+                chara->state = STOP;
             }
-            _Register_elements(scene, pro);
-            chara->new_proj = true;
+        }
+        else if (chara->state == MOVE)
+        {
+            if (key_state[ALLEGRO_KEY_SPACE])
+            {
+                chara->state = ATK;
+            }
+            else if (key_state[ALLEGRO_KEY_A])
+            {
+                chara->dir1 = false;
+                chara->dir2 = false;
+                _Character_update_position(self, -5, 0);
+                chara->state = MOVE;
+            }
+            else if (key_state[ALLEGRO_KEY_S])
+            {
+                chara->dir1 = false;
+                chara->dir2 = false;
+                _Character_update_position(self, 0, 5);
+                chara->state = MOVE;
+            }
+            else if (key_state[ALLEGRO_KEY_W])
+            {
+                chara->dir1 = false;
+                chara->dir2 = true;
+                _Character_update_position(self, 0, -5);
+                chara->state = MOVE;
+            }
+            else if (key_state[ALLEGRO_KEY_D])
+            {
+                chara->dir1 = true;
+                chara->dir2 = false;
+                _Character_update_position(self, 5, 0);
+                chara->state = MOVE;
+            }
+            if (chara->gif_status[chara->state]->done)
+                chara->state = STOP;
+        }
+        else if (chara->state == ATK)
+        {
+            if (chara->gif_status[chara->state]->done)
+            {
+                chara->state = STOP;
+                chara->new_proj = false;
+            }
+            if (chara->gif_status[ATK]->display_index == 2 && chara->new_proj == false)
+            {
+                Elements *pro;
+                if (chara->dir1)
+                {
+                    pro = New_Projectile(Projectile_L,
+                                        chara->x + chara->width - 100,
+                                        chara->y + 10,
+                                        5);
+                }
+                else
+                {
+                    pro = New_Projectile(Projectile_L,
+                                        chara->x - 50,
+                                        chara->y + 10,
+                                        -5);
+                }
+                _Register_elements(scene, pro);
+                chara->new_proj = true;
+            }
         }
     }
 }
