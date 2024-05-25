@@ -214,41 +214,47 @@ void _Character_update_position(Elements *self, int dx, int dy)
     
     // Check collisions with obstacles
     // If there's a collision, revert the position update
-    
-    if(chara->needstop)
-    {     
-        if(chara->dir == 4) 
-        {
-            chara->y += 2;
-            chara->hitbox->update_center_y(chara->hitbox, 2);
+    for(int i = 0;i<3;i++)
+    {
+        if(chara->needstop)
+        {     
+            if(chara->dir == 4) 
+            {
+                chara->y += 2;
+                chara->hitbox->update_center_y(chara->hitbox, 2);
+                chara->needstop = false; 
+                return;
+            }
+            else if(chara->dir == 3) 
+            {
+                chara->x -= 2;
+                chara->hitbox->update_center_x(chara->hitbox, -2);
+                chara->needstop = false;   
+                return;
+            }
+            else if(chara->dir == 2) 
+            {
+                chara->x += 2;
+                chara->hitbox->update_center_x(chara->hitbox, 2);
+                chara->needstop = false;   
+                return;
+            }
+            else if(chara->dir == 1) 
+            {
+                chara->y -= 2;
+                chara->hitbox->update_center_y(chara->hitbox, -2);
+                chara->needstop = false;   
+                return;
+            }            
         }
-        else if(chara->dir == 3) 
-        {
-            chara->x -= 2;
-            chara->hitbox->update_center_x(chara->hitbox, -2);
-        }
-        else if(chara->dir == 2) 
-        {
-            chara->x += 2;
-            chara->hitbox->update_center_x(chara->hitbox, 2);
-        }
-        else if(chara->dir == 1) 
-        {
-            chara->y -= 2;
-            chara->hitbox->update_center_y(chara->hitbox, -2);
-
-        } 
-        chara->needstop = false;   
-        return;
+        else break;
     }
     // Temporarily update position to check for collisions
-    else
-    {
-        chara->x += dx;
-        chara->y += dy;
-        chara->hitbox->update_center_x(chara->hitbox, dx);
-        chara->hitbox->update_center_y(chara->hitbox, dy);
-    }
+    chara->x += dx;
+    chara->y += dy;
+    chara->hitbox->update_center_x(chara->hitbox, dx);
+    chara->hitbox->update_center_y(chara->hitbox, dy);
+
     
     
        
@@ -262,5 +268,25 @@ void Character_interact(Elements *self, Elements *tar) {
     {
         obj->needstop = true;
     }
-
+     for(int i = 0; i < 3; i++) {
+        if(obj->needstop) {
+            // Adjust character's position
+            _Character_update_position(self, 0, 0);
+            
+            // Check for collision again after adjustment
+            if (obstacle->hitbox->overlap(obstacle->hitbox, obj->hitbox)) {
+                obj->needstop = true; // If collision still occurs, keep the character stopped
+            } else {
+                obj->needstop = false; // If collision resolved, resume character's movement
+            }
+            
+            // Return after adjusting position and resolving collision
+            return;
+        } else {
+            // If no collision, break out of the loop
+            break;
+        }
+    }
 }
+
+
