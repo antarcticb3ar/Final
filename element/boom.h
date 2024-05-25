@@ -10,8 +10,10 @@ typedef struct _Boom
 {
     int x, y;          // the position of image
     int width, height; // the width and height of image
-    int l;             // the long of Boom
+    int q;             // the quantity of Boom
+    int newboom; 
     ALLEGRO_BITMAP *img;
+    ALLEGRO_TIMER *timer;
     Shape *hitbox; // the hitbox of object
 } Boom;
 Elements *New_Boom(int label, int x, int y, int l);
