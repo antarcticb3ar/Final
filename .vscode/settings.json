@@ -1,0 +1,10 @@
+{
+	"terminal.integrated.env.windows": {
+		"PATH": "${workspaceFolder}\\..\\MinGW\\bin;${env:PATH}"
+	},
+	"files.associations": {
+		"allegro_audio.h": "c",
+		"projectile.h": "c",
+		"rectangle.h": "c"
+	}
+}
