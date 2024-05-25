@@ -21,8 +21,10 @@ typedef struct _Character
 {
     int x, y;
     int width, height;              // the width and height of image
-    bool dir1, dir2;          // [dir1, dir2]true: face to [right, back], false: face to [left, foreward] 
+    int dir;          // 1, 2, 3, 4  [下,左,右,上]
+    bool dir1;
     int state;                      // the state of character
+    bool needstop;
     ALGIF_ANIMATION *gif_status[3]; // gif for each state. 0: stop, 1: move, 2:attack
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     int anime;      // counting the time of animation
@@ -32,7 +34,7 @@ typedef struct _Character
 } Character;
 Elements *New_Character(int label);
 void _Character_update_position(Elements *self, int dx, int dy);
-void Character_update(Elements *self, Elements *target);
+void Character_update(Elements *self);
 void Character_interact(Elements *self, Elements *target);
 void Character_draw(Elements *self);
 void Character_destory(Elements *self);

@@ -5,6 +5,7 @@
 	"files.associations": {
 		"allegro_audio.h": "c",
 		"projectile.h": "c",
-		"rectangle.h": "c"
+		"rectangle.h": "c",
+		"gamescene.h": "c"
 	}
 }
