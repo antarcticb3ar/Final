@@ -11,7 +11,7 @@ Elements *New_Obstacle(int label)
     pDerivedObj->img = al_load_bitmap("assets/image/Obstacle.png");
     pDerivedObj->width = al_get_bitmap_width(pDerivedObj->img);
     pDerivedObj->height = al_get_bitmap_height(pDerivedObj->img);
-    pDerivedObj->x = 300;
+    pDerivedObj->x = 200;
     pDerivedObj->y = 300;
     pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x,
                                         pDerivedObj->y,
