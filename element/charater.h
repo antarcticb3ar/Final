@@ -29,7 +29,7 @@ typedef struct _Character
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     int anime;      // counting the time of animation
     int anime_time; // indicate how long the animation
-    bool new_proj;
+    bool new_boom;
     Shape *hitbox; // the hitbox of object
 } Character;
 Elements *New_Character(int label);

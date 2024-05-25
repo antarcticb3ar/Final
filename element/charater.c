@@ -1,6 +1,7 @@
 #include "charater.h"
 #include "..\\global.h"
 #include "Obstacle.h"
+#include "Boom.h"
 #include "../scene/sceneManager.h"
 #include "projectile.h"
 #include "../shapes/Rectangle.h"
@@ -37,13 +38,13 @@ Elements *New_Character(int label)
     pDerivedObj->y = HEIGHT - pDerivedObj->height - 60;
     pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x,
                                         pDerivedObj->y,
-                                        pDerivedObj->x + 2 * pDerivedObj->width / 3,
-                                        pDerivedObj->y + 2 * pDerivedObj->height / 3);
+                                        pDerivedObj->x + pDerivedObj->width,
+                                        pDerivedObj->y + pDerivedObj->height);
     pDerivedObj->dir = 1; // 1, 2, 3, 4  [下,左,右,上]
     // initial the animation component
     pDerivedObj->state = STOP;
     pDerivedObj->needstop = false;
-    pDerivedObj->new_proj = false;
+    pDerivedObj->new_boom = false;
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
@@ -151,27 +152,19 @@ void Character_update(Elements *self)
         if (chara->gif_status[chara->state]->done)
         {
             chara->state = STOP;
-            chara->new_proj = false;
+            chara->new_boom = false;
         }
-        if (chara->gif_status[ATK]->display_index == 2 && chara->new_proj == false)
+        if (chara->gif_status[ATK]->display_index == 1 && chara->new_boom == false)
         {
-            Elements *pro;
-            if (chara->dir == 1)
-            {
-                pro = New_Projectile(Projectile_L,
-                                    chara->x + chara->width - 100,
-                                    chara->y + 10,
-                                    5);
-            }
-            else
-            {
-                pro = New_Projectile(Projectile_L,
-                                    chara->x - 50,
-                                    chara->y + 10,
-                                    -5);
-            }
-            _Register_elements(scene, pro);
-            chara->new_proj = true;
+            Elements *boom;
+            boom = New_Boom(Boom_L,
+                                chara->x + chara->width / 2,
+                                chara->y + chara->height / 2,
+                                3);
+            
+            
+            _Register_elements(scene, boom);
+            chara->new_boom = true;
         }
     }
     
