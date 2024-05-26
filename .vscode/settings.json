@@ -6,10 +6,6 @@
 		"allegro_audio.h": "c",
 		"projectile.h": "c",
 		"rectangle.h": "c",
-		"gamescene.h": "c",
-		"scenemanager.h": "c",
-		"stdbool.h": "c",
-		"element.h": "c",
-		"boomrange.h": "c"
+		"menu.h": "c"
 	}
 }

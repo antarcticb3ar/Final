@@ -8,6 +8,7 @@
 #include "../algif5/src/algif.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <allegro5/allegro_primitives.h>
 /*
    [Character function]
 */
@@ -25,21 +26,21 @@ Elements *New_Character(int label)
         sprintf(buffer, "assets/image/chara_%s.gif", state_string[i]);
         pDerivedObj->gif_status[i] = algif_new_gif(buffer, -1);
     }
-    // load effective sound
+    // load effective soundW
     ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/atk_sound.wav");
     pDerivedObj->atk_Sound = al_create_sample_instance(sample);
     al_set_sample_instance_playmode(pDerivedObj->atk_Sound, ALLEGRO_PLAYMODE_ONCE);
     al_attach_sample_instance_to_mixer(pDerivedObj->atk_Sound, al_get_default_mixer());
 
     // initial the geometric information of character
-     pDerivedObj->width = pDerivedObj->gif_status[0]->width;
-    pDerivedObj->height = pDerivedObj->gif_status[0]->height;
+     pDerivedObj->width = pDerivedObj->gif_status[0]->width - 280;
+    pDerivedObj->height = pDerivedObj->gif_status[0]->height - 270;
     pDerivedObj->x = 300;
     pDerivedObj->y = HEIGHT - pDerivedObj->height - 60;
     pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x,
-                                        pDerivedObj->y,
-                                        pDerivedObj->x + pDerivedObj->width,
-                                        pDerivedObj->y + pDerivedObj->height);
+                                        pDerivedObj->y + 50,
+                                        pDerivedObj->x + 50,
+                                        pDerivedObj->y + 85);
     pDerivedObj->dir = 1; // 1, 2, 3, 4  [下,左,右,上]
     // initial the animation component
     pDerivedObj->state = STOP;
@@ -174,9 +175,16 @@ void Character_draw(Elements *self)
     // with the state, draw corresponding image
     Character *chara = ((Character *)(self->pDerivedObj));
     ALLEGRO_BITMAP *frame = algif_get_bitmap(chara->gif_status[chara->state], al_get_time());
+    al_draw_rectangle(
+        chara->x,
+                                        chara->y + 50,
+                                        chara->x + 50,
+                                        chara->y + 85,
+        al_map_rgb(255, 0, 0), 2
+    );
     if (frame)
     {
-        al_draw_bitmap(frame, chara->x, chara->y, ((chara->dir1) ? ALLEGRO_FLIP_HORIZONTAL : 0));
+        al_draw_bitmap(frame, chara->x, chara->y,0);
     }
     if (chara->state == ATK && chara->gif_status[chara->state]->display_index == 2)
     {

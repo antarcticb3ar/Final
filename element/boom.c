@@ -23,8 +23,8 @@ Elements *New_Boom(int label, int x, int y, int q)
     pDerivedObj->timer = al_create_timer(1.5);
     al_start_timer(pDerivedObj->timer);                                     
     // setting the interact object
-    // pObj->inter_obj[pObj->inter_len++] = Tree_L;
-    // pObj->inter_obj[pObj->inter_len++] = Floor_L;
+    pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
+    //pObj->inter_obj[pObj->inter_len++] = Floor_L;
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
     pObj->Update = Boom_update;

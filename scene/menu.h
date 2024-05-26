@@ -5,6 +5,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+
 /*
    [Menu object]
 */
@@ -14,6 +15,11 @@ typedef struct _Menu
     ALLEGRO_SAMPLE *song;
     ALLEGRO_SAMPLE_INSTANCE *sample_instance;
     int title_x, title_y;
+    int option_x, option_y_start, option_spacing;
+    char *options[3];
+    int option_count;
+    int current_option;
+    ALLEGRO_BITMAP *background;
 } Menu;
 Scene *New_Menu(int label);
 void menu_update(Scene *self);
