@@ -18,11 +18,11 @@ typedef enum EleType
 {
     Floor_L,
     Teleport_L,
-    Tree_L,
-    Character_L,
-    Charac2_L,
+    Tree_L,   
     Projectile_L,
     Obstacle_L,
+    Character_L,
+    Charac2_L,
     Boom_L,
     Boomrange_L
 } EleType;
