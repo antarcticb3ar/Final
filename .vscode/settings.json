@@ -6,6 +6,10 @@
 		"allegro_audio.h": "c",
 		"projectile.h": "c",
 		"rectangle.h": "c",
-		"menu.h": "c"
+		"menu.h": "c",
+		"obstacle.h": "c",
+		"element.h": "c",
+		"boomrange.h": "c",
+		"guidemap.h": "c"
 	}
 }

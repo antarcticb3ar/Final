@@ -159,8 +159,8 @@ void Character_update(Elements *self)
         {
             Elements *boom;
             boom = New_Boom(Boom_L,
-                                chara->x + chara->width / 2,
-                                chara->y + chara->height / 2,
+                                chara->x + chara->width / 2 -30,
+                                chara->y + chara->height / 2 -10,
                                 3);
             
             
@@ -175,13 +175,10 @@ void Character_draw(Elements *self)
     // with the state, draw corresponding image
     Character *chara = ((Character *)(self->pDerivedObj));
     ALLEGRO_BITMAP *frame = algif_get_bitmap(chara->gif_status[chara->state], al_get_time());
-    al_draw_rectangle(
-        chara->x,
-                                        chara->y + 50,
-                                        chara->x + 50,
-                                        chara->y + 85,
-        al_map_rgb(255, 0, 0), 2
-    );
+    al_draw_rectangle(chara->x,
+                        chara->y + 50,
+                        chara->x + 50,
+                        chara->y + 85, al_map_rgb(255, 0, 0), 1);
     if (frame)
     {
         al_draw_bitmap(frame, chara->x, chara->y,0);

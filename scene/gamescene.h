@@ -11,6 +11,7 @@
 #include "../element/obstacle.h"
 #include "../element/boom.h"
 #include "../element/boomrange.h"
+#include "../element/guidemap.h"
 /*
    [game scene object]
 */
@@ -24,7 +25,8 @@ typedef enum EleType
     Character_L,
     Charac2_L,
     Boom_L,
-    Boomrange_L
+    Boomrange_L,
+    Guidemap_L
 } EleType;
 typedef struct _GameScene
 {
