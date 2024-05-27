@@ -28,7 +28,7 @@ Elements *New_Character(int label)
         pDerivedObj->gif_status[i] = algif_new_gif(buffer, -1);
     }
     // load effective soundW
-    ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/atk_sound.wav");
+    ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/1ti1ti.wav");
     pDerivedObj->atk_Sound = al_create_sample_instance(sample);
     al_set_sample_instance_playmode(pDerivedObj->atk_Sound, ALLEGRO_PLAYMODE_ONCE);
     al_attach_sample_instance_to_mixer(pDerivedObj->atk_Sound, al_get_default_mixer());
@@ -58,6 +58,7 @@ Elements *New_Character(int label)
     pDerivedObj->invincible = false;
     pDerivedObj->invincible_start_time = 0.0;
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
+    pObj->inter_obj[pObj->inter_len++] = Boom_L;
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
     pObj->Draw = Character_draw;
@@ -307,15 +308,40 @@ void _Character_update_position(Elements *self, int dx, int dy)
 }
 
 void Character_interact(Elements *self, Elements *tar) {
-    Character *obj = ((Character *)(self->pDerivedObj));
-    Obstacle *obstacle = ((Obstacle *)(tar->pDerivedObj));     
-
-    if(obstacle->hitbox->overlap(obstacle->hitbox, obj->hitbox)) 
+    Character *obj = ((Character *)(self->pDerivedObj));       
+     if (tar->label == Boom_L) 
     {
-        obj->needstop = true;
+        Boom *boom = ((Boom *)(tar->pDerivedObj));
+        for(int i = 0; i < 3; i++) {
+            if(obj->needstop) {
+                // Adjust character's position
+                _Character_update_position(self, 0, 0);
+                
+                // Check for collision again after adjustment
+                if (boom->hitbox->overlap(boom->hitbox, obj->hitbox)) {
+                    obj->needstop = true; // If collision still occurs, keep the character stopped
+                } else {
+                    obj->needstop = false; // If collision resolved, resume character's movement
+                }
+                
+                // Return after adjusting position and resolving collision
+                return;
+            } else {
+                // If no collision, break out of the loop
+                break;
+            }
+        }
     }
-     for(int i = 0; i < 3; i++) {
-        if(obj->needstop) {
+     
+    else if (tar->label == Obstacle_L) 
+    {
+        Obstacle *obstacle = ((Obstacle *)(tar->pDerivedObj));
+        if (obstacle->hitbox->overlap(obstacle->hitbox, obj->hitbox)) 
+        {
+            obj->needstop = true;
+        }
+        for(int i = 0; i < 3; i++) {
+            if(obj->needstop) {
             // Adjust character's position
             _Character_update_position(self, 0, 0);
             
@@ -328,11 +354,13 @@ void Character_interact(Elements *self, Elements *tar) {
             
             // Return after adjusting position and resolving collision
             return;
-        } else {
+            } else {
             // If no collision, break out of the loop
             break;
+            }
         }
     }
+    
 }
 
 

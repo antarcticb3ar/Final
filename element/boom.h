@@ -14,6 +14,7 @@ typedef struct _Boom
     int newboom; 
     ALLEGRO_BITMAP *img;
     ALLEGRO_TIMER *timer;
+    bool characteron;
     Shape *hitbox; // the hitbox of object
 } Boom;
 Elements *New_Boom(int label, int x, int y, int l);

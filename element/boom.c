@@ -1,5 +1,6 @@
 #include "boom.h"
 #include "boomrange.h"
+#include "charater.h"
 #include "../shapes/Circle.h"
 #include "../scene/sceneManager.h"
 #include "../shapes/Rectangle.h"
@@ -20,15 +21,17 @@ Elements *New_Boom(int label, int x, int y, int q)
     pDerivedObj->y = y;
     printf("%d\n", y);
     pDerivedObj->q = q;
-    pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x + 3,
+    pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x -3,
                                         pDerivedObj->y + 25,
-                                        pDerivedObj->x + 65,
+                                        pDerivedObj->x + 71,
                                         pDerivedObj->y + 67);
 
     pDerivedObj->timer = al_create_timer(1.5);
+    pDerivedObj->characteron = true;
     al_start_timer(pDerivedObj->timer);                                     
     // setting the interact object
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
+    pObj->inter_obj[pObj->inter_len++] = Character_L;
     //pObj->inter_obj[pObj->inter_len++] = Floor_L;
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
@@ -70,11 +73,26 @@ void Boom_update(Elements *self)
 void _Boom_update_position(Elements *self, int dx, int dy) {}
 void Boom_interact(Elements *self, Elements *tar)
 {
-    // Boom *Obj = ((Boom *)(self->pDerivedObj));
-    // if (tar->label == Floor_L)
-    // {
-        
-    // }
+    Boom *Obj = ((Boom *)(self->pDerivedObj));
+    if (tar->label == Character_L)
+    {
+        Character *chara = ((Character *)(tar->pDerivedObj));
+             
+        // 如果角色在炸弹上方，则允许角色站在炸弹上
+        if (Obj->characteron && Obj->hitbox->overlap(Obj->hitbox, chara->hitbox))
+        {
+            Obj->characteron = true;
+        }
+        else
+        {
+            Obj->characteron = false;
+            // 处理角色与炸弹的碰撞
+            if (Obj->hitbox->overlap(Obj->hitbox, chara->hitbox))
+            {
+                chara->needstop = true;
+            }
+        }
+    }
     // else if (tar->label == Tree_L)
     // {
         
@@ -84,9 +102,9 @@ void Boom_draw(Elements *self)
 {
     Boom *Obj = ((Boom *)(self->pDerivedObj));
     al_draw_bitmap(Obj->img, Obj->x, Obj->y, 0);
-    al_draw_rectangle(Obj->x +3,
+    al_draw_rectangle(Obj->x - 3,
                         Obj->y + 25,
-                        Obj->x + 65,
+                        Obj->x + 71,
                         Obj->y + 67, al_map_rgb(255, 0, 0), 2);
     
 }
