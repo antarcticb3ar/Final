@@ -1,6 +1,7 @@
 #include "boomrange.h"
 #include "boom.h"
 #include "charater.h"
+#include "obstacle.h"
 #include "heart.h"
 #include "..\\global.h"
 #include "../shapes/Rectangle.h"
@@ -27,7 +28,7 @@ Elements *New_Boomrange(int label, int x, int y)
     al_start_timer(pDerivedObj->timer);                                     
     // setting the interact object
     pObj->inter_obj[pObj->inter_len++] = Character_L;
-    pObj->inter_obj[pObj->inter_len++] = Floor_L;
+    pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
     pObj->Update = Boomrange_update;
@@ -59,10 +60,14 @@ void Boomrange_interact(Elements *self, Elements *tar)
             printf("Character hit! Remaining lives: %d\n", remain);
         }
     }
-    // else if (tar->label == Tree_L)
-    // {
-        
-    // }
+    else if (tar->label == Obstacle_L)
+    {
+        Obstacle *obs = ((Obstacle *)(tar->pDerivedObj));
+        if (obs->hitbox->overlap(obs->hitbox, Obj->hitbox)) {  
+            tar->dele = true;
+            self->dele = true;
+        }       
+    }
 }
 void Boomrange_draw(Elements *self)
 {
