@@ -10,6 +10,9 @@
 		"obstacle.h": "c",
 		"element.h": "c",
 		"boomrange.h": "c",
-		"guidemap.h": "c"
+		"guidemap.h": "c",
+		"algif.h": "c",
+		"scenemanager.h": "c",
+		"boom.h": "c"
 	}
 }

@@ -2,6 +2,7 @@
 #include "..\\global.h"
 #include "Obstacle.h"
 #include "Boom.h"
+#include "guidemap.h"
 #include "../scene/sceneManager.h"
 #include "projectile.h"
 #include "../shapes/Rectangle.h"
@@ -35,12 +36,21 @@ Elements *New_Character(int label)
     // initial the geometric information of character
      pDerivedObj->width = pDerivedObj->gif_status[0]->width - 280;
     pDerivedObj->height = pDerivedObj->gif_status[0]->height - 270;
-    pDerivedObj->x = 300;
-    pDerivedObj->y = HEIGHT - pDerivedObj->height - 60;
+    pDerivedObj->x = 182 + 16;
+    pDerivedObj->y = 233 - 45;
+    pDerivedObj->xx = 2;
+    pDerivedObj->yy = 2;
+    pDerivedObj->currentx = 185;
+    pDerivedObj->currenty = 234;
     pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x,
                                         pDerivedObj->y + 50,
-                                        pDerivedObj->x + 50,
+                                        pDerivedObj->x + 53,
                                         pDerivedObj->y + 85);
+    pDerivedObj->hitbox2 = New_Rectangle(pDerivedObj->currentx,
+                                         pDerivedObj->currenty,
+                                         pDerivedObj->currentx + 80,
+                                         pDerivedObj->currenty + 52);
+
     pDerivedObj->dir = 1; // 1, 2, 3, 4  [下,左,右,上]
     // initial the animation component
     pDerivedObj->state = STOP;
@@ -159,8 +169,8 @@ void Character_update(Elements *self)
         {
             Elements *boom;
             boom = New_Boom(Boom_L,
-                                chara->x + chara->width / 2 -30,
-                                chara->y + chara->height / 2 -10,
+                                chara->currentx + 5,
+                                chara->currenty - 20,
                                 3);
             
             
@@ -177,8 +187,12 @@ void Character_draw(Elements *self)
     ALLEGRO_BITMAP *frame = algif_get_bitmap(chara->gif_status[chara->state], al_get_time());
     al_draw_rectangle(chara->x,
                         chara->y + 50,
-                        chara->x + 50,
-                        chara->y + 85, al_map_rgb(255, 0, 0), 1);
+                        chara->x + 53,
+                        chara->y + 85, al_map_rgb(255, 0, 0), 2);
+    al_draw_rectangle(chara->currentx,
+                        chara->currenty,
+                        chara->currentx + 80,
+                        chara->currenty + 52, al_map_rgb(0, 255, 0), 2);
     if (frame)
     {
         al_draw_bitmap(frame, chara->x, chara->y,0);
@@ -252,10 +266,41 @@ void _Character_update_position(Elements *self, int dx, int dy)
     chara->y += dy;
     chara->hitbox->update_center_x(chara->hitbox, dx);
     chara->hitbox->update_center_y(chara->hitbox, dy);
+    int gamex[10] ={28, 105, 185, 260, 337, 415, 492, 570, 647, 725};
+    int gamey[9] ={182, 234, 285, 337, 388, 440, 491, 543};
+    int detactx[12] ={67, 144, 221, 298, 375, 452, 529, 606, 683, 760, 837};
+    int detacty[11] ={157, 208, 259, 310, 361, 412, 463, 514, 565, 616, 667};
+
+    int min_dist_x = abs(chara->x + 25 - detactx[0]);
+    chara->currentx = detactx[0];
+    chara->xx = 0;
+    for (int i = 1; i < 11; i++)
+    {
+        int dist_x = abs(chara->x + 25 - detactx[i]);
+        if (dist_x < min_dist_x)
+        {
+            min_dist_x = dist_x;
+            chara->currentx = gamex[i];
+        }
+    }
+
+    // Find nearest y grid position
+    int min_dist_y = abs(chara->y + 67 - detacty[0]);
+    chara->currenty = detacty[0];
+    chara->yy = 0;
+    for (int i = 1; i < 10; i++)
+    {
+        int dist_y = abs(chara->y + 67 - detacty[i]);
+        if (dist_y < min_dist_y)
+        {
+            min_dist_y = dist_y;
+            chara->currenty = gamey[i-1];
+        }
+    }
 
     
-    
-       
+    // Update currentx and currenty to the nearest grid positions
+
 }
 
 void Character_interact(Elements *self, Elements *tar) {

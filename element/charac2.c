@@ -5,6 +5,7 @@
 #include "projectile.h"
 #include "../shapes/Rectangle.h"
 #include "../algif5/src/algif.h"
+#include "projectile.h"
 #include <stdio.h>
 #include <stdbool.h>
 /*

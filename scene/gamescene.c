@@ -16,7 +16,8 @@ Scene *New_GameScene(int label)
     _Register_elements(pObj, New_Charac2(Charac2_L));
     _Register_elements(pObj, New_Character(Character_L));
     _Register_elements(pObj, New_Obstacle(Obstacle_L));
-    _Register_elements(pObj, New_Guidemap(Guidemap_L));
+    //_Register_elements(pObj, New_Guidemap(Guidemap_L));
+    _Register_elements(pObj, New_Heart(Heart_L));
     // setting derived object function
     pObj->Update = game_scene_update;
     pObj->Draw = game_scene_draw;

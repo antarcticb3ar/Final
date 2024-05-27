@@ -25,12 +25,17 @@ typedef struct _Character
     bool dir1;
     int state;                      // the state of character
     bool needstop;
+    int currentx; //現在的x格的座標
+    int currenty; //現在的y格的座標
+    int xx; //現在第x格
+    int yy; //現在第y格
     ALGIF_ANIMATION *gif_status[3]; // gif for each state. 0: stop, 1: move, 2:attack
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     int anime;      // counting the time of animation
     int anime_time; // indicate how long the animation
     bool new_boom;
     Shape *hitbox; // the hitbox of object
+    Shape *hitbox2; // the hitbox of need put boom
 } Character;
 Elements *New_Character(int label);
 void _Character_update_position(Elements *self, int dx, int dy);

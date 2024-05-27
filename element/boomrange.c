@@ -1,5 +1,7 @@
 #include "boomrange.h"
 #include "boom.h"
+#include "charater.h"
+#include "heart.h"
 #include "../shapes/Rectangle.h"
 #include <allegro5/allegro.h>
 /*
@@ -23,7 +25,7 @@ Elements *New_Boomrange(int label, int x, int y, int l)
     pDerivedObj->timer = al_create_timer(0.5);
     al_start_timer(pDerivedObj->timer);                                     
     // setting the interact object
-    pObj->inter_obj[pObj->inter_len++] = Tree_L;
+    pObj->inter_obj[pObj->inter_len++] = Character_L;
     pObj->inter_obj[pObj->inter_len++] = Floor_L;
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
@@ -45,11 +47,16 @@ void Boomrange_update(Elements *self)
 void _Boomrange_update_position(Elements *self, int dx, int dy) {}
 void Boomrange_interact(Elements *self, Elements *tar)
 {
-    // Boomrange *Obj = ((Boomrange *)(self->pDerivedObj));
-    // if (tar->label == Floor_L)
-    // {
-        
-    // }
+    Boomrange *Obj = ((Boomrange *)(self->pDerivedObj));
+    if (tar->label == Character_L)
+    {
+        Character *chara = ((Character *)(tar->pDerivedObj));
+        Heart *heart = ((Heart *)(tar->pDerivedObj));
+        if (chara->hitbox->overlap(chara->hitbox, Obj->hitbox))
+        {
+            heart->remain--;
+        }
+    }
     // else if (tar->label == Tree_L)
     // {
         
