@@ -27,8 +27,9 @@ typedef struct _Character
     bool needstop;
     int currentx; //現在的x格的座標
     int currenty; //現在的y格的座標
-    int xx; //現在第x格
-    int yy; //現在第y格
+    int remain; //剩下多少血
+    bool invincible;
+    double invincible_start_time;
     ALGIF_ANIMATION *gif_status[3]; // gif for each state. 0: stop, 1: move, 2:attack
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     int anime;      // counting the time of animation

@@ -22,11 +22,11 @@ typedef enum EleType
     Teleport_L,
     Tree_L,   
     Projectile_L,
+    Boomrange_L,
     Obstacle_L,
+    Boom_L,  
     Character_L,
     Charac2_L,
-    Boom_L,
-    Boomrange_L,
     Guidemap_L,
     Heart_L
 } EleType;

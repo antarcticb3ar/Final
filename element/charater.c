@@ -38,8 +38,7 @@ Elements *New_Character(int label)
     pDerivedObj->height = pDerivedObj->gif_status[0]->height - 270;
     pDerivedObj->x = 182 + 16;
     pDerivedObj->y = 233 - 45;
-    pDerivedObj->xx = 2;
-    pDerivedObj->yy = 2;
+    pDerivedObj->remain = 3;
     pDerivedObj->currentx = 185;
     pDerivedObj->currenty = 234;
     pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x,
@@ -56,6 +55,8 @@ Elements *New_Character(int label)
     pDerivedObj->state = STOP;
     pDerivedObj->needstop = false;
     pDerivedObj->new_boom = false;
+    pDerivedObj->invincible = false;
+    pDerivedObj->invincible_start_time = 0.0;
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
@@ -69,7 +70,10 @@ void Character_update(Elements *self)
 {
     // use the idea of finite state machine to deal with different state
     Character *chara = ((Character *)(self->pDerivedObj));
-   
+    if (chara->invincible && (al_get_time() - chara->invincible_start_time >= 2.5)) {
+        chara->invincible = false;
+        printf("Invincibility ended\n");
+    }
     if (chara->state == STOP || chara->needstop == true)
     {
         if (key_state[ALLEGRO_KEY_SPACE])
@@ -123,7 +127,7 @@ void Character_update(Elements *self)
             chara->dir = 2;
             chara->dir1 = false;
             if (!chara->needstop) { // 只有在不需要停止时才更新位置
-                _Character_update_position(self, -2, 0);
+                _Character_update_position(self, -3, 0);
             }
             chara->state = MOVE;
         }
@@ -131,7 +135,7 @@ void Character_update(Elements *self)
         {
             chara->dir = 1;
             if (!chara->needstop) {
-                _Character_update_position(self, 0, 2);
+                _Character_update_position(self, 0, 3);
             }
             chara->state = MOVE;
         }
@@ -140,7 +144,7 @@ void Character_update(Elements *self)
             chara->dir = 4;
             chara->dir1 = true;
             if (!chara->needstop) {
-                _Character_update_position(self, 0, -2);
+                _Character_update_position(self, 0, -3);
             }     
             chara->state = MOVE;
         }
@@ -148,7 +152,7 @@ void Character_update(Elements *self)
         {
             chara->dir = 3;
             if (!chara->needstop) {
-                _Character_update_position(self, 2, 0);
+                _Character_update_position(self, 3, 0);
             }        
             chara->state = MOVE;
         }
@@ -178,6 +182,7 @@ void Character_update(Elements *self)
             chara->new_boom = true;
         }
     }
+    
     
 }
 void Character_draw(Elements *self)
@@ -232,29 +237,29 @@ void _Character_update_position(Elements *self, int dx, int dy)
         {     
             if(chara->dir == 4) 
             {
-                chara->y += 2;
-                chara->hitbox->update_center_y(chara->hitbox, 2);
+                chara->y += 3;
+                chara->hitbox->update_center_y(chara->hitbox, 3);
                 chara->needstop = false; 
                 return;
             }
             else if(chara->dir == 3) 
             {
-                chara->x -= 2;
-                chara->hitbox->update_center_x(chara->hitbox, -2);
+                chara->x -= 3;
+                chara->hitbox->update_center_x(chara->hitbox, -3);
                 chara->needstop = false;   
                 return;
             }
             else if(chara->dir == 2) 
             {
-                chara->x += 2;
-                chara->hitbox->update_center_x(chara->hitbox, 2);
+                chara->x += 3;
+                chara->hitbox->update_center_x(chara->hitbox, 3);
                 chara->needstop = false;   
                 return;
             }
             else if(chara->dir == 1) 
             {
-                chara->y -= 2;
-                chara->hitbox->update_center_y(chara->hitbox, -2);
+                chara->y -= 3;
+                chara->hitbox->update_center_y(chara->hitbox, -3);
                 chara->needstop = false;   
                 return;
             }            
@@ -266,14 +271,13 @@ void _Character_update_position(Elements *self, int dx, int dy)
     chara->y += dy;
     chara->hitbox->update_center_x(chara->hitbox, dx);
     chara->hitbox->update_center_y(chara->hitbox, dy);
-    int gamex[10] ={28, 105, 185, 260, 337, 415, 492, 570, 647, 725};
+    int gamex[11] ={28, 105, 185, 260, 337, 415, 492, 570, 647, 725};
     int gamey[9] ={182, 234, 285, 337, 388, 440, 491, 543};
     int detactx[12] ={67, 144, 221, 298, 375, 452, 529, 606, 683, 760, 837};
     int detacty[11] ={157, 208, 259, 310, 361, 412, 463, 514, 565, 616, 667};
 
     int min_dist_x = abs(chara->x + 25 - detactx[0]);
     chara->currentx = detactx[0];
-    chara->xx = 0;
     for (int i = 1; i < 11; i++)
     {
         int dist_x = abs(chara->x + 25 - detactx[i]);
@@ -287,7 +291,6 @@ void _Character_update_position(Elements *self, int dx, int dy)
     // Find nearest y grid position
     int min_dist_y = abs(chara->y + 67 - detacty[0]);
     chara->currenty = detacty[0];
-    chara->yy = 0;
     for (int i = 1; i < 10; i++)
     {
         int dist_y = abs(chara->y + 67 - detacty[i]);

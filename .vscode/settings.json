@@ -13,6 +13,8 @@
 		"guidemap.h": "c",
 		"algif.h": "c",
 		"scenemanager.h": "c",
-		"boom.h": "c"
+		"boom.h": "c",
+		"heart.h": "c",
+		"allegro_primitives.h": "c"
 	}
 }

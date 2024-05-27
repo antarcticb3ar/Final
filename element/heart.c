@@ -1,4 +1,6 @@
-#include "Heart.h"
+#include "heart.h"
+#include "charater.h"
+#include "charater.h"
 #include "../shapes/Rectangle.h"
 /*
    [Heart function]
@@ -13,9 +15,7 @@ Elements *New_Heart(int label)
     pDerivedObj->height = al_get_bitmap_height(pDerivedObj->img);
     pDerivedObj->x = 70;
     pDerivedObj->y = 20;
-    pDerivedObj->remain = 3;
-
-    // setting derived object function
+   // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
     pObj->Update = Heart_update;
     pObj->Interact = Heart_interact;
@@ -23,12 +23,16 @@ Elements *New_Heart(int label)
     pObj->Destroy = Heart_destory;
     return pObj;
 }
-void Heart_update(Elements *self) {}
-void Heart_interact(Elements *self, Elements *tar) {}
+void Heart_update(Elements *self) {
+    //Heart *Obj = ((Heart *)(self->pDerivedObj));
+    
+}
+void Heart_interact(Elements *self, Elements *tar) {
+}
 void Heart_draw(Elements *self)
 {
     Heart *Obj = ((Heart *)(self->pDerivedObj));
-    for(int i = 0;i < Obj->remain;i++){
+    for(int i = 0;i < remain;i++){
         al_draw_bitmap(Obj->img, Obj->x + i * 30, Obj->y, 0);
     }
     

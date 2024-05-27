@@ -12,6 +12,7 @@ typedef struct _Heart
     int width, height; // the width and height of image
     int remain; //剩下多少血
     ALLEGRO_BITMAP *img;
+    ALLEGRO_TIMER *timer;
     Shape *hitbox; // the hitbox of object
 } Heart;
 Elements *New_Heart(int label);

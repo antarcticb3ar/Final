@@ -11,11 +11,12 @@ typedef struct _Boomrange
     int x, y;          // the position of image
     int width, height; // the width and height of image
     int l;             // the long of Boomrange
+    int remain; //剩下多少血    
     ALLEGRO_BITMAP *img;
     ALLEGRO_TIMER *timer;
     Shape *hitbox; // the hitbox of object
 } Boomrange;
-Elements *New_Boomrange(int label, int x, int y, int l);
+Elements *New_Boomrange(int label, int x, int y);
 void Boomrange_update(Elements *self);
 void Boomrange_interact(Elements *self, Elements *tar);
 void Boomrange_draw(Elements *self);

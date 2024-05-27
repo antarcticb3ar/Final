@@ -2,7 +2,10 @@
 #include "boomrange.h"
 #include "../shapes/Circle.h"
 #include "../scene/sceneManager.h"
+#include "../shapes/Rectangle.h"
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
+
 /*
    [Boom function]
 */
@@ -12,14 +15,16 @@ Elements *New_Boom(int label, int x, int y, int q)
     Elements *pObj = New_Elements(label);
     // setting derived object member
     pDerivedObj->img = al_load_bitmap("assets/image/boom.png");
-    pDerivedObj->width = al_get_bitmap_width(pDerivedObj->img);
-    pDerivedObj->height = al_get_bitmap_height(pDerivedObj->img);
     pDerivedObj->x = x;
+    printf("%d\n", x);
     pDerivedObj->y = y;
+    printf("%d\n", y);
     pDerivedObj->q = q;
-    pDerivedObj->hitbox = New_Circle(pDerivedObj->x + pDerivedObj->width / 2,
-                                     pDerivedObj->y + pDerivedObj->height / 2,
-                                     min(pDerivedObj->width, pDerivedObj->height) / 2);
+    pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x + 3,
+                                        pDerivedObj->y + 25,
+                                        pDerivedObj->x + 65,
+                                        pDerivedObj->y + 67);
+
     pDerivedObj->timer = al_create_timer(1.5);
     al_start_timer(pDerivedObj->timer);                                     
     // setting the interact object
@@ -40,11 +45,24 @@ void Boom_update(Elements *self)
     if (al_get_timer_count(Obj->timer) >= 1.5) // Timer reached 1.5 seconds
     {
         // Create a Boomrange object when the bomb is about to be destroyed
-        Elements *boomrange = New_Boomrange(Boomrange_L,
+        
+        //for(int i = 0;i < 2/*Obj->l*/;i++) {
+            Elements *boomrange; 
+            boomrange = New_Boomrange(Boomrange_L,
                                             Obj->x,
-                                            Obj->y,
-                                            3);
-        _Register_elements(scene, boomrange); // Assuming _Register_elements adds the object to the scene
+                                            Obj->y);
+            int i = 1;
+            _Register_elements(scene, boomrange);
+            boomrange = New_Boomrange(Boomrange_L, Obj->x + 77.5 * i, Obj->y);
+            _Register_elements(scene, boomrange);
+            boomrange = New_Boomrange(Boomrange_L, Obj->x - 77.5 * i, Obj->y);
+            _Register_elements(scene, boomrange);
+            boomrange = New_Boomrange(Boomrange_L, Obj->x, Obj->y + 51.5 * i);
+            _Register_elements(scene, boomrange);
+            boomrange = New_Boomrange(Boomrange_L, Obj->x, Obj->y - 51.5 * i);
+            _Register_elements(scene, boomrange); // Assuming _Register_elements adds the object to the scene
+        
+    //}
 
         self->dele = (self); // Mark the bomb for deletion
     }
@@ -65,7 +83,11 @@ void Boom_interact(Elements *self, Elements *tar)
 void Boom_draw(Elements *self)
 {
     Boom *Obj = ((Boom *)(self->pDerivedObj));
-    al_draw_bitmap(Obj->img, Obj->x, Obj->y, ALLEGRO_FLIP_HORIZONTAL);
+    al_draw_bitmap(Obj->img, Obj->x, Obj->y, 0);
+    al_draw_rectangle(Obj->x +3,
+                        Obj->y + 25,
+                        Obj->x + 65,
+                        Obj->y + 67, al_map_rgb(255, 0, 0), 2);
     
 }
 void Boom_destory(Elements *self)
