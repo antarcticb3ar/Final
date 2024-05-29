@@ -11,13 +11,7 @@
 /*
    [character object]
 */
-typedef enum Character2Type
-{
-    STOP2 = 0,
-    MOVE2,
-    ATK2,
-    DIED2
-} Character2Type;
+
 typedef struct _Character2
 {
     int x, y;

@@ -1,6 +1,7 @@
 #include "boom.h"
 #include "boomrange.h"
 #include "charater.h"
+#include "charac2.h"
 #include "../shapes/Circle.h"
 #include "../scene/sceneManager.h"
 #include "../shapes/Rectangle.h"
@@ -27,12 +28,14 @@ Elements *New_Boom(int label, int x, int y, int q)
                                         pDerivedObj->y + 68);
     pDerivedObj->instant = false;                                        
 
-    pDerivedObj->timer = al_create_timer(1.5);
-    pDerivedObj->characteron = true;
+    pDerivedObj->timer = al_create_timer(1.2);
+    pDerivedObj->characteron1 = true;
+    pDerivedObj->characteron2 = true;
     al_start_timer(pDerivedObj->timer);                                     
     // setting the interact object
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
     pObj->inter_obj[pObj->inter_len++] = Character_L;
+    pObj->inter_obj[pObj->inter_len++] = Character2_L;
     //pObj->inter_obj[pObj->inter_len++] = Floor_L;
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
@@ -46,7 +49,7 @@ Elements *New_Boom(int label, int x, int y, int q)
 void Boom_update(Elements *self)
 {
     Boom *Obj = ((Boom *)(self->pDerivedObj));
-    if (al_get_timer_count(Obj->timer) >= 1.5 || Obj->instant) // Timer reached 1.5 seconds
+    if (al_get_timer_count(Obj->timer) >= 1.2 || Obj->instant) // Timer reached 1.5 seconds
     {
         // Create a Boomrange object when the bomb is about to be destroyed
         
@@ -80,13 +83,13 @@ void Boom_interact(Elements *self, Elements *tar)
         Character *chara = ((Character *)(tar->pDerivedObj));
              
         // 如果角色在炸弹上方，则允许角色站在炸弹上
-        if (Obj->characteron && Obj->hitbox->overlap(Obj->hitbox, chara->hitbox))
+        if (Obj->characteron1 && Obj->hitbox->overlap(Obj->hitbox, chara->hitbox))
         {
-            Obj->characteron = true;
+            Obj->characteron1 = true;
         }
         else
         {
-            Obj->characteron = false;
+            Obj->characteron1 = false;
             // 处理角色与炸弹的碰撞
             if (Obj->hitbox->overlap(Obj->hitbox, chara->hitbox))
             {
@@ -96,20 +99,20 @@ void Boom_interact(Elements *self, Elements *tar)
     }
     else if (tar->label == Character2_L)
     {
-        Character2 *chara = ((Character2 *)(tar->pDerivedObj));
+        Character2 *chara2 = ((Character2 *)(tar->pDerivedObj));
              
         // 如果角色在炸弹上方，则允许角色站在炸弹上
-        if (Obj->characteron && Obj->hitbox->overlap(Obj->hitbox, chara->hitbox))
+        if (Obj->characteron2 && Obj->hitbox->overlap(Obj->hitbox, chara2->hitbox))
         {
-            Obj->characteron = true;
+            Obj->characteron2 = true;
         }
         else
         {
-            Obj->characteron = false;
+            Obj->characteron2 = false;
             // 处理角色与炸弹的碰撞
-            if (Obj->hitbox->overlap(Obj->hitbox, chara->hitbox))
+            if (Obj->hitbox->overlap(Obj->hitbox, chara2->hitbox))
             {
-                chara->needstop = true;
+                chara2->needstop = true;
             }
         }
     }

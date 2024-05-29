@@ -10,7 +10,9 @@ Scene *New_GameScene(int label)
     pDerivedObj->background = al_load_bitmap("assets/image/newmap.png");
     pObj->pDerivedObj = pDerivedObj;
     // register element
-    //_Register_elements(pObj, New_Floor(Floor_L));
+    _Register_elements(pObj, New_Boarder(Boarder_L, 167.9, 55));
+    _Register_elements(pObj, New_Boarder(Boarder_L, 167.9, 571));
+    _Register_elements(pObj, New_Boarder(Boarder_L, 704.7, 55));
     //_Register_elements(pObj, New_Teleport(Teleport_L));
     //_Register_elements(pObj, New_Tree(Tree_L));
     _Register_elements(pObj, New_Character2(Character2_L));
@@ -23,8 +25,8 @@ Scene *New_GameScene(int label)
     //     _Register_elements(pObj, New_Obstacle(Obstacle_L, 1178.4, 55 + i * 64.7));
     //     _Register_elements(pObj, New_Obstacle(Obstacle_L, 235  + i * 67.1, 958));
     // }
-    for(int i = 0;i<7;i += 2) {
-        for(int j = 0;j<7;j += 2) {
+    for(int i = 0;i<5;i += 2) {
+        for(int j = 0;j<5;j += 2) {
             _Register_elements(pObj, New_Obstacle(Obstacle_L, 304.2 + i * 67.3, 184 + j * 64.7));
         }
     }
@@ -45,7 +47,8 @@ Scene *New_GameScene(int label)
         _Register_elements(pObj, New_Obstacle1(Obstacle1_L, 570.5, 248.7 + i * 64.6));
     }    
     //_Register_elements(pObj, New_Guidemap(Guidemap_L));
-    _Register_elements(pObj, New_Heart(Heart_L));
+    _Register_elements(pObj, New_Heart(Heart_L, 20, 20));
+    _Register_elements(pObj, New_Heart2(Heart2_L, 800, 20));
     // setting derived object function
     pObj->Update = game_scene_update;
     pObj->Draw = game_scene_draw;

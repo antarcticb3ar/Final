@@ -1,6 +1,8 @@
 #include "boomrange.h"
 #include "boom.h"
+#include "boarder.h"
 #include "charater.h"
+#include "charac2.h"
 #include "obstacle.h"
 #include "obstacle1.h"
 #include "boom.h"
@@ -26,12 +28,14 @@ Elements *New_Boomrange(int label, int x, int y)
                                         pDerivedObj->y + 14,
                                         pDerivedObj->x + 64.1,
                                         pDerivedObj->y + 62);
-    pDerivedObj->timer = al_create_timer(0.5);
+    pDerivedObj->timer = al_create_timer(0.28);
     al_start_timer(pDerivedObj->timer);                                     
     // setting the interact object
     pObj->inter_obj[pObj->inter_len++] = Character_L;
+    pObj->inter_obj[pObj->inter_len++] = Character2_L;
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
     pObj->inter_obj[pObj->inter_len++] = Obstacle1_L;
+    pObj->inter_obj[pObj->inter_len++] = Boarder_L;
     pObj->inter_obj[pObj->inter_len++] = Boom_L;
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
@@ -45,7 +49,7 @@ Elements *New_Boomrange(int label, int x, int y)
 void Boomrange_update(Elements *self)
 {
     Boomrange *Obj = ((Boomrange *)(self->pDerivedObj));
-    if (al_get_timer_count(Obj->timer) >= 0.3)
+    if (al_get_timer_count(Obj->timer) >= 0.28)
     {
         self->dele = (self); 
     }
@@ -94,6 +98,13 @@ void Boomrange_interact(Elements *self, Elements *tar)
         Boom *obs = ((Boom *)(tar->pDerivedObj));
         if (obs->hitbox->overlap(obs->hitbox, Obj->hitbox)) {  
             obs->instant = true;
+        }       
+    }
+    else if (tar->label == Boarder_L)
+    {
+        Boarder *obs = ((Boarder *)(tar->pDerivedObj));
+        if (obs->hitbox->overlap(obs->hitbox, Obj->hitbox) || obs->hitbox2->overlap(obs->hitbox2, Obj->hitbox)) {  
+            self->dele = true;
         }       
     }
 }

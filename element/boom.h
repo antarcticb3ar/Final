@@ -19,7 +19,7 @@ typedef struct _Boom
     int soon;
     ALGIF_ANIMATION *img;
     ALLEGRO_TIMER *timer;
-    bool characteron;
+    bool characteron1, characteron2;
     bool instant;
     Shape *hitbox; // the hitbox of object
 } Boom;

@@ -11,7 +11,7 @@ typedef struct _Obstacle
     int x, y;          // the position of image
     int width, height; // the width and height of image
     ALLEGRO_BITMAP *img;
-    Shape *hitbox, *hitbox2;//, *hitbox3, *hitbox4; // the hitbox of object
+    Shape *hitbox;//, *hitbox3, *hitbox4; // the hitbox of object
 } Obstacle;
 Elements *New_Obstacle(int label, int x, int y);
 void Obstacle_update(Elements *self);

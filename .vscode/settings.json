@@ -15,6 +15,9 @@
 		"scenemanager.h": "c",
 		"boom.h": "c",
 		"heart.h": "c",
-		"allegro_primitives.h": "c"
+		"allegro_primitives.h": "c",
+		"stdbool.h": "c",
+		"charac2.h": "c",
+		"circle.h": "c"
 	}
 }

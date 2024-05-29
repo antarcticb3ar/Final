@@ -2,6 +2,7 @@
 #include "..\\global.h"
 #include "obstacle.h"
 #include "obstacle1.h"
+#include "boarder.h"
 #include "Boom.h"
 #include "guidemap.h"
 #include "../scene/sceneManager.h"
@@ -56,7 +57,7 @@ Elements *New_Character2(int label)
 
     pDerivedObj->dir = 1; // 1, 2, 3, 4  [下,左,右,上]
     // initial the animation component
-    pDerivedObj->state = STOP2;
+    pDerivedObj->state = STOP;
     pDerivedObj->needstop = false;
     pDerivedObj->new_boom = false;
     pDerivedObj->invincible = false;
@@ -65,6 +66,7 @@ Elements *New_Character2(int label)
     pDerivedObj->new_boom = false;
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
     pObj->inter_obj[pObj->inter_len++] = Obstacle1_L;
+    pObj->inter_obj[pObj->inter_len++] = Boarder_L;
     pObj->inter_obj[pObj->inter_len++] = Boom_L;
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
@@ -87,25 +89,25 @@ void Character2_update(Elements *self)
         chara->new_boom = false;
     }  
     
-    if (chara->state == STOP2 || chara->needstop == true)
+    if (chara->state == STOP || chara->needstop == true)
     {
         if (key_state[ALLEGRO_KEY_P])
         {
-            chara->state = ATK2;
+            chara->state = ATK;
         }
         
         else if (key_state[ALLEGRO_KEY_K])
         {
             chara->dir = 1;
-            chara->state = MOVE2;
+            chara->state = MOVE;
             if(chara->invincible) {
-                chara->state = DIED2;
+                chara->state = DIED;
             } 
             if(chara->needstop == true)
                 _Character2_update_position(self, 0, 0);
             if(chara->invincible) {
-                chara->state = DIED2;
-            } else chara->state = MOVE2;          
+                chara->state = DIED;
+            } else chara->state = MOVE;          
         }
         else if (key_state[ALLEGRO_KEY_I])
         {
@@ -113,8 +115,8 @@ void Character2_update(Elements *self)
             if(chara->needstop == true)
                 _Character2_update_position(self, 0, 0);
             if(chara->invincible) {
-                chara->state = DIED2;
-            } else chara->state = MOVE2;
+                chara->state = DIED;
+            } else chara->state = MOVE;
         }
         else if (key_state[ALLEGRO_KEY_J])
         {
@@ -124,16 +126,16 @@ void Character2_update(Elements *self)
             if(chara->needstop == true)
                 _Character2_update_position(self, 0, 0);
             if(chara->invincible) {
-                chara->state = DIED2;
-            } else chara->state = MOVE2; 
+                chara->state = DIED;
+            } else chara->state = MOVE; 
         }
         else if (key_state[ALLEGRO_KEY_L])
         {
             chara->dir = 3;
             chara->dir1 = true;
-            chara->state = MOVE2;
+            chara->state = MOVE;
             if(chara->invincible) {
-                chara->state = DIED2;
+                chara->state = DIED;
             }
             if(chara->needstop == true)
                 _Character2_update_position(self, 0, 0);
@@ -141,16 +143,16 @@ void Character2_update(Elements *self)
         else
         {
             if(chara->invincible) {
-                chara->state = DIED2;
+                chara->state = DIED;
             } else
-            chara->state = STOP2;
+            chara->state = STOP;
         }
     }
-    else if (chara->state == MOVE2 )
+    else if (chara->state == MOVE )
     {
-        if (key_state[ALLEGRO_KEY_SPACE])
+        if (key_state[ALLEGRO_KEY_P])
         {
-            chara->state = ATK2;
+            chara->state = ATK;
         }
         else if (key_state[ALLEGRO_KEY_J])
         {
@@ -160,9 +162,9 @@ void Character2_update(Elements *self)
                 _Character2_update_position(self, -3, 0);
             }
             if(chara->invincible) {
-                chara->state = DIED2;
+                chara->state = DIED;
             } else
-            chara->state = MOVE2;
+            chara->state = MOVE;
             
         }
         else if (key_state[ALLEGRO_KEY_K])
@@ -172,9 +174,9 @@ void Character2_update(Elements *self)
                 _Character2_update_position(self, 0, 3);
             }
             if(chara->invincible) {
-                chara->state = DIED2;
+                chara->state = DIED;
             } else
-            chara->state = MOVE2;
+            chara->state = MOVE;
             
         }
         else if (key_state[ALLEGRO_KEY_I])
@@ -185,9 +187,9 @@ void Character2_update(Elements *self)
                 _Character2_update_position(self, 0, -3);
             }   
             if(chara->invincible) {
-                chara->state = DIED2;
+                chara->state = DIED;
             } else
-            chara->state = MOVE2;
+            chara->state = MOVE;
             
         }
         else if (key_state[ALLEGRO_KEY_L])
@@ -197,28 +199,28 @@ void Character2_update(Elements *self)
                 _Character2_update_position(self, 3, 0);
             }    
             if(chara->invincible) {
-                chara->state = DIED2;
+                chara->state = DIED;
             } else   
-            chara->state = MOVE2;
+            chara->state = MOVE;
             
         }
         if (chara->needstop) {
-            chara->state = STOP2; 
+            chara->state = STOP; 
         }
         if (chara->gif_status[chara->state]->done)
-            chara->state = STOP2;
+            chara->state = STOP;
 
     }
-     else if (chara->state == ATK2)
+     else if (chara->state == ATK)
     {
         if (chara->gif_status[chara->state]->done)
         {
             if(chara->invincible) {
-                chara->state = DIED2;
+                chara->state = DIED;
             }  
-            else chara->state = STOP2;       
+            else chara->state = STOP;       
         }
-        if (quality2 > 0 && !chara->new_boom && chara->gif_status[ATK2]->display_index == 1)
+        if (quality2 > 0 && !chara->new_boom && chara->gif_status[ATK]->display_index == 1)
         {
             Elements *boom;
             boom = New_Boom(Boom_L,
@@ -233,7 +235,7 @@ void Character2_update(Elements *self)
         }
         else if (key_state[ALLEGRO_KEY_P])
         {
-            chara->state = ATK2;
+            chara->state = ATK;
         }       
         else if (key_state[ALLEGRO_KEY_J])
         {
@@ -267,11 +269,11 @@ void Character2_update(Elements *self)
         }
                  
     }
-    else if(chara->state == DIED2) {
+    else if(chara->state == DIED) {
         if(chara->invincible) {     
             if (key_state[ALLEGRO_KEY_P])
             {
-                chara->state = ATK2;
+                chara->state = ATK;
             }
             
             else if (key_state[ALLEGRO_KEY_J])
@@ -305,11 +307,11 @@ void Character2_update(Elements *self)
                 }        
             }           
             else  {
-                chara->state = DIED2;
+                chara->state = DIED;
             }
         }
         else
-            chara->state = STOP2;
+            chara->state = STOP;
     }
       
 }
@@ -331,7 +333,7 @@ void Character2_draw(Elements *self)
     {
         al_draw_bitmap(frame, chara->x, chara->y,0);
     }
-    if (chara->state == ATK2 && chara->gif_status[chara->state]->display_index == 2)
+    if (chara->state == ATK && chara->gif_status[chara->state]->display_index == 2)
     {
         al_play_sample_instance(chara->atk_Sound);
     }
@@ -515,6 +517,36 @@ void Character2_interact(Elements *self, Elements *tar) {
                 obj->needstop = true; // If collision still occurs, keep the Character2 stopped
             } else {
                 obj->needstop = false; // If collision resolved, resume Character2's movement
+            }
+            
+            // Return after adjusting position and resolving collision
+            return;
+            } else {
+            // If no collision, break out of the loop
+            break;
+            }
+        }
+    }
+    else if (tar->label == Boarder_L) 
+    {
+        Boarder *boarder = ((Boarder *)(tar->pDerivedObj));
+        if (boarder->hitbox->overlap(boarder->hitbox, obj->hitbox) ||
+            boarder->hitbox2->overlap(boarder->hitbox2, obj->hitbox)) 
+            // boarder->hitbox3->overlap(boarder->hitbox3, obj->hitbox) ||
+            // boarder->hitbox4->overlap(boarder->hitbox4, obj->hitbox)) 
+        {
+            obj->needstop = true;
+        }
+        for(int i = 0; i < 3; i++) {
+            if(obj->needstop) {
+            // Adjust character's position
+            _Character_update_position(self, 0, 0);
+            
+            // Check for collision again after adjustment
+            if (boarder->hitbox->overlap(boarder->hitbox, obj->hitbox)) {
+                obj->needstop = true; // If collision still occurs, keep the character stopped
+            } else {
+                obj->needstop = false; // If collision resolved, resume character's movement
             }
             
             // Return after adjusting position and resolving collision

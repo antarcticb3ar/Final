@@ -3,11 +3,11 @@
 #include "charac2.h"
 #include "../shapes/Rectangle.h"
 /*
-   [Heart function]
+   [Heart2 function]
 */
-Elements *New_Heart(int label, int x, int y)
+Elements *New_Heart2(int label, int x, int y)
 {
-    Heart *pDerivedObj = (Heart *)malloc(sizeof(Heart));
+    Heart2 *pDerivedObj = (Heart2 *)malloc(sizeof(Heart2));
     Elements *pObj = New_Elements(label);
     // setting derived object member
     pDerivedObj->img = al_load_bitmap("assets/image/heart.png");
@@ -17,29 +17,29 @@ Elements *New_Heart(int label, int x, int y)
     pDerivedObj->y = y;
    // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
-    pObj->Update = Heart_update;
-    pObj->Interact = Heart_interact;
-    pObj->Draw = Heart_draw;
-    pObj->Destroy = Heart_destory;
+    pObj->Update = Heart2_update;
+    pObj->Interact = Heart2_interact;
+    pObj->Draw = Heart2_draw;
+    pObj->Destroy = Heart2_destory;
     return pObj;
 }
-void Heart_update(Elements *self) {
-    //Heart *Obj = ((Heart *)(self->pDerivedObj));
+void Heart2_update(Elements *self) {
+    //Heart2 *Obj = ((Heart2 *)(self->pDerivedObj));
     
 }
-void Heart_interact(Elements *self, Elements *tar) {
+void Heart2_interact(Elements *self, Elements *tar) {
 }
-void Heart_draw(Elements *self)
+void Heart2_draw(Elements *self)
 {
-    Heart *Obj = ((Heart *)(self->pDerivedObj));
-    for(int i = 0;i < remain;i++){
+    Heart2 *Obj = ((Heart2 *)(self->pDerivedObj));
+    for(int i = 0;i < remain2;i++){
         al_draw_bitmap(Obj->img, Obj->x + i * 30, Obj->y, 0);
     }
     
 }
-void Heart_destory(Elements *self)
+void Heart2_destory(Elements *self)
 {
-    Heart *Obj = ((Heart *)(self->pDerivedObj));
+    Heart2 *Obj = ((Heart2 *)(self->pDerivedObj));
     al_destroy_bitmap(Obj->img);
     free(Obj->hitbox);
     free(Obj);

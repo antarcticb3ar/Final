@@ -14,7 +14,7 @@ Elements *New_Obstacle(int label, int x, int y)
     pDerivedObj->height = al_get_bitmap_height(pDerivedObj->img);
     pDerivedObj->x = x;
     pDerivedObj->y = y;
-    pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x, pDerivedObj->y, pDerivedObj->x + 67.1, pDerivedObj->y + 65.5);                                                                                                                                                                       
+    pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x, pDerivedObj->y, pDerivedObj->x + 67.1, pDerivedObj->y + 65.5);                                                                                                                                                                    
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
     pObj->Update = Obstacle_update;

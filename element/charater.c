@@ -2,6 +2,7 @@
 #include "..\\global.h"
 #include "obstacle.h"
 #include "obstacle1.h"
+#include "boarder.h"
 #include "Boom.h"
 #include "guidemap.h"
 #include "../scene/sceneManager.h"
@@ -65,6 +66,7 @@ Elements *New_Character(int label)
     pDerivedObj->new_boom = false;
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
     pObj->inter_obj[pObj->inter_len++] = Obstacle1_L;
+    pObj->inter_obj[pObj->inter_len++] = Boarder_L;
     pObj->inter_obj[pObj->inter_len++] = Boom_L;
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
@@ -512,6 +514,36 @@ void Character_interact(Elements *self, Elements *tar) {
             
             // Check for collision again after adjustment
             if (obstacle->hitbox->overlap(obstacle->hitbox, obj->hitbox)) {
+                obj->needstop = true; // If collision still occurs, keep the character stopped
+            } else {
+                obj->needstop = false; // If collision resolved, resume character's movement
+            }
+            
+            // Return after adjusting position and resolving collision
+            return;
+            } else {
+            // If no collision, break out of the loop
+            break;
+            }
+        }
+    }
+    else if (tar->label == Boarder_L) 
+    {
+        Boarder *boarder = ((Boarder *)(tar->pDerivedObj));
+        if (boarder->hitbox->overlap(boarder->hitbox, obj->hitbox) ||
+            boarder->hitbox2->overlap(boarder->hitbox2, obj->hitbox)) 
+            // boarder->hitbox3->overlap(boarder->hitbox3, obj->hitbox) ||
+            // boarder->hitbox4->overlap(boarder->hitbox4, obj->hitbox)) 
+        {
+            obj->needstop = true;
+        }
+        for(int i = 0; i < 3; i++) {
+            if(obj->needstop) {
+            // Adjust character's position
+            _Character_update_position(self, 0, 0);
+            
+            // Check for collision again after adjustment
+            if (boarder->hitbox->overlap(boarder->hitbox, obj->hitbox)) {
                 obj->needstop = true; // If collision still occurs, keep the character stopped
             } else {
                 obj->needstop = false; // If collision resolved, resume character's movement

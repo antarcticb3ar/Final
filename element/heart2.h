@@ -1,12 +1,12 @@
-#ifndef HEART_H_INCLUDED
-#define HEART_H_INCLUDED
+#ifndef HEART2_H_INCLUDED
+#define HEART2_H_INCLUDED
 #include "element.h"
 #include "../scene/gamescene.h" // for element label
 #include "../shapes/Shape.h"
 /*
-   [Heart object]
+   [Heart2 object]
 */
-typedef struct _Heart
+typedef struct _Heart2
 {
     int x, y;          // the position of image
     int width, height; // the width and height of image
@@ -14,11 +14,11 @@ typedef struct _Heart
     ALLEGRO_BITMAP *img;
     ALLEGRO_TIMER *timer;
     Shape *hitbox; // the hitbox of object
-} Heart;
-Elements *New_Heart(int label, int x, int y);
-void Heart_update(Elements *self);
-void Heart_interact(Elements *self, Elements *tar);
-void Heart_draw(Elements *self);
-void Heart_destory(Elements *self);
+} Heart2;
+Elements *New_Heart2(int label, int x, int y);
+void Heart2_update(Elements *self);
+void Heart2_interact(Elements *self, Elements *tar);
+void Heart2_draw(Elements *self);
+void Heart2_destory(Elements *self);
 
 #endif

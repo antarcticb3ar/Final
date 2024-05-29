@@ -13,7 +13,7 @@ typedef struct _Boomrange
     int l;             // the long of Boomrange
     int remain; //剩下多少血    
     ALLEGRO_BITMAP *img;
-    ALLEGRO_TIMER *timer;
+    ALLEGRO_TIMER *timer, *timer2;
     Shape *hitbox; // the hitbox of object
 } Boomrange;
 Elements *New_Boomrange(int label, int x, int y);
