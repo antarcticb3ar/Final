@@ -9,6 +9,7 @@
 #include "../element/tree.h"
 #include "../element/projectile.h"
 #include "../element/obstacle.h"
+#include "../element/obstacle1.h"
 #include "../element/boom.h"
 #include "../element/boomrange.h"
 #include "../element/guidemap.h"
@@ -24,9 +25,10 @@ typedef enum EleType
     Projectile_L,
     Boomrange_L,
     Obstacle_L,
+    Obstacle1_L,
     Boom_L,  
     Character_L,
-    Charac2_L,
+    Character2_L,
     Guidemap_L,
     Heart_L
 } EleType;

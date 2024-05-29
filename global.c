@@ -4,9 +4,13 @@
 // variables for global usage
 const double FPS = 60.0;
 const int WIDTH = 900;
-const int HEIGHT = 672;
+
+const int HEIGHT = 640;
 int window = 0;
 int remain = 3;
+int remain2 = 3;
+int quality = 3;
+int quality2 = 3;
 ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 ALLEGRO_EVENT event;
 ALLEGRO_TIMER *fps = NULL;

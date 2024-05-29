@@ -21,9 +21,9 @@ Scene *New_Menu(int label)
     al_reserve_samples(20);
     pDerivedObj->sample_instance = al_create_sample_instance(pDerivedObj->song);
     pDerivedObj->title_x = WIDTH / 2;
-    pDerivedObj->title_y = HEIGHT / 2 - 50;
+    pDerivedObj->title_y = HEIGHT / 2 - 120;
     pDerivedObj->option_x = WIDTH / 2;
-    pDerivedObj->option_y_start = HEIGHT / 2;
+    pDerivedObj->option_y_start = HEIGHT / 2 - 80;
     pDerivedObj->option_spacing = 30;
     // Loop the song until the display closes
     al_set_sample_instance_playmode(pDerivedObj->sample_instance, ALLEGRO_PLAYMODE_LOOP);
@@ -86,7 +86,7 @@ void menu_update(Scene *self)
         if (Obj->current_option == 0) // Start Game
         {
             self->scene_end = true;
-            window = 1; // Assuming window 1 is the game scene
+            window = 2; // Assuming window 1 is the game scene
         }
         else if (Obj->current_option == 1) // Settings
         {

@@ -1,6 +1,7 @@
 #include "charater.h"
 #include "..\\global.h"
-#include "Obstacle.h"
+#include "obstacle.h"
+#include "obstacle1.h"
 #include "Boom.h"
 #include "guidemap.h"
 #include "../scene/sceneManager.h"
@@ -19,9 +20,9 @@ Elements *New_Character(int label)
     Elements *pObj = New_Elements(label);
     // setting derived object member
     // load character images
-    char state_string[3][10] = {"stop", "move", "attack"};
+    char state_string[5][10] = {"stop", "move", "attack", "died"};
     
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
     {
         char buffer[50];
         sprintf(buffer, "assets/image/chara_%s.gif", state_string[i]);
@@ -36,19 +37,22 @@ Elements *New_Character(int label)
     // initial the geometric information of character
      pDerivedObj->width = pDerivedObj->gif_status[0]->width - 280;
     pDerivedObj->height = pDerivedObj->gif_status[0]->height - 270;
-    pDerivedObj->x = 182 + 16;
-    pDerivedObj->y = 233 - 45;
-    pDerivedObj->remain = 3;
-    pDerivedObj->currentx = 185;
-    pDerivedObj->currenty = 234;
-    pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x,
+    pDerivedObj->x = 302 + 16;
+    pDerivedObj->y = 120 - 45;
+    pDerivedObj->currentx = 302;
+    pDerivedObj->currenty = 120;
+    // pDerivedObj->x = 235; 
+    // pDerivedObj->y = 55; 
+    // pDerivedObj->width = 67; //range67.1
+    // pDerivedObj->height = 65; //range64.5
+    pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x + 6,
                                         pDerivedObj->y + 50,
-                                        pDerivedObj->x + 53,
+                                        pDerivedObj->x + 47,
                                         pDerivedObj->y + 85);
     pDerivedObj->hitbox2 = New_Rectangle(pDerivedObj->currentx,
                                          pDerivedObj->currenty,
-                                         pDerivedObj->currentx + 80,
-                                         pDerivedObj->currenty + 52);
+                                         pDerivedObj->currentx + 67.7,
+                                         pDerivedObj->currenty + 65.5);
 
     pDerivedObj->dir = 1; // 1, 2, 3, 4  [下,左,右,上]
     // initial the animation component
@@ -57,7 +61,10 @@ Elements *New_Character(int label)
     pDerivedObj->new_boom = false;
     pDerivedObj->invincible = false;
     pDerivedObj->invincible_start_time = 0.0;
+    pDerivedObj->timer = al_create_timer(0.1);
+    pDerivedObj->new_boom = false;
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
+    pObj->inter_obj[pObj->inter_len++] = Obstacle1_L;
     pObj->inter_obj[pObj->inter_len++] = Boom_L;
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
@@ -71,10 +78,15 @@ void Character_update(Elements *self)
 {
     // use the idea of finite state machine to deal with different state
     Character *chara = ((Character *)(self->pDerivedObj));
-    if (chara->invincible && (al_get_time() - chara->invincible_start_time >= 2.5)) {
+    if (chara->invincible && (al_get_time() - chara->invincible_start_time >= 3.0)) {
         chara->invincible = false;
         printf("Invincibility ended\n");
     }
+    if (chara->new_boom && al_get_timer_count(chara->timer) >= 0.1) {
+        quality++;
+        chara->new_boom = false;
+    }  
+    
     if (chara->state == STOP || chara->needstop == true)
     {
         if (key_state[ALLEGRO_KEY_SPACE])
@@ -85,41 +97,58 @@ void Character_update(Elements *self)
         else if (key_state[ALLEGRO_KEY_S])
         {
             chara->dir = 1;
-            chara->state = MOVE; 
+            chara->state = MOVE;
+            if(chara->invincible) {
+                chara->state = DIED;
+            } 
             if(chara->needstop == true)
-                _Character_update_position(self, 0, 0);          
+                _Character_update_position(self, 0, 0);
+            if(chara->invincible) {
+                chara->state = DIED;
+            } else chara->state = MOVE;          
         }
         else if (key_state[ALLEGRO_KEY_W])
         {
             chara->dir = 4;
-            chara->state = MOVE;
             if(chara->needstop == true)
                 _Character_update_position(self, 0, 0);
+            if(chara->invincible) {
+                chara->state = DIED;
+            } else chara->state = MOVE;
         }
         else if (key_state[ALLEGRO_KEY_A])
         {
             chara->dir = 2;
             chara->dir1 = false;
-            chara->state = MOVE;
+                      
             if(chara->needstop == true)
                 _Character_update_position(self, 0, 0);
+            if(chara->invincible) {
+                chara->state = DIED;
+            } else chara->state = MOVE; 
         }
         else if (key_state[ALLEGRO_KEY_D])
         {
             chara->dir = 3;
             chara->dir1 = true;
             chara->state = MOVE;
+            if(chara->invincible) {
+                chara->state = DIED;
+            }
             if(chara->needstop == true)
                 _Character_update_position(self, 0, 0);
         }
         else
         {
+            if(chara->invincible) {
+                chara->state = DIED;
+            } else
             chara->state = STOP;
         }
     }
     else if (chara->state == MOVE )
     {
-            if (key_state[ALLEGRO_KEY_SPACE])
+        if (key_state[ALLEGRO_KEY_SPACE])
         {
             chara->state = ATK;
         }
@@ -130,7 +159,11 @@ void Character_update(Elements *self)
             if (!chara->needstop) { // 只有在不需要停止时才更新位置
                 _Character_update_position(self, -3, 0);
             }
+            if(chara->invincible) {
+                chara->state = DIED;
+            } else
             chara->state = MOVE;
+            
         }
         else if (key_state[ALLEGRO_KEY_S])
         {
@@ -138,7 +171,11 @@ void Character_update(Elements *self)
             if (!chara->needstop) {
                 _Character_update_position(self, 0, 3);
             }
+            if(chara->invincible) {
+                chara->state = DIED;
+            } else
             chara->state = MOVE;
+            
         }
         else if (key_state[ALLEGRO_KEY_W])
         {
@@ -146,8 +183,80 @@ void Character_update(Elements *self)
             chara->dir1 = true;
             if (!chara->needstop) {
                 _Character_update_position(self, 0, -3);
-            }     
+            }   
+            if(chara->invincible) {
+                chara->state = DIED;
+            } else
             chara->state = MOVE;
+            
+        }
+        else if (key_state[ALLEGRO_KEY_D])
+        {
+            chara->dir = 3;
+            if (!chara->needstop) {
+                _Character_update_position(self, 3, 0);
+            }    
+            if(chara->invincible) {
+                chara->state = DIED;
+            } else   
+            chara->state = MOVE;
+            
+        }
+        if (chara->needstop) {
+            chara->state = STOP; 
+        }
+        if (chara->gif_status[chara->state]->done)
+            chara->state = STOP;
+
+    }
+     else if (chara->state == ATK)
+    {
+        if (chara->gif_status[chara->state]->done)
+        {
+            if(chara->invincible) {
+                chara->state = DIED;
+            }  
+            else chara->state = STOP;       
+        }
+        if (quality > 0 && !chara->new_boom && chara->gif_status[ATK]->display_index == 1)
+        {
+            Elements *boom;
+            boom = New_Boom(Boom_L,
+                                chara->currentx + 3,
+                                chara->currenty - 6,
+                                3);          
+            _Register_elements(scene, boom);
+            al_start_timer(chara->timer); 
+            chara->new_boom = true; 
+            printf("%d\n", quality);
+            quality--;            
+        }
+        else if (key_state[ALLEGRO_KEY_SPACE])
+        {
+            chara->state = ATK;
+        }       
+        else if (key_state[ALLEGRO_KEY_A])
+        {
+            chara->dir = 2;
+            chara->dir1 = false;
+            if (!chara->needstop) { // 只有在不需要停止时才更新位置
+                _Character_update_position(self, -3, 0);
+            }
+        }
+        else if (key_state[ALLEGRO_KEY_S])
+        {
+            chara->dir = 1;
+            if (!chara->needstop) {
+                _Character_update_position(self, 0, 3);
+            }        
+        }
+        else if (key_state[ALLEGRO_KEY_W])
+        {
+            chara->dir = 4;
+            chara->dir1 = true;
+            if (!chara->needstop) {
+                _Character_update_position(self, 0, -3);
+            }               
         }
         else if (key_state[ALLEGRO_KEY_D])
         {
@@ -155,50 +264,69 @@ void Character_update(Elements *self)
             if (!chara->needstop) {
                 _Character_update_position(self, 3, 0);
             }        
-            chara->state = MOVE;
         }
-        if (chara->needstop) {
-            chara->state = STOP; // 如果需要停止，将状态设置为停止
+                 
+    }
+    else if(chara->state == DIED) {
+        if(chara->invincible) {     
+            if (key_state[ALLEGRO_KEY_SPACE])
+            {
+                chara->state = ATK;
+            }
+            
+            else if (key_state[ALLEGRO_KEY_A])
+            {
+                chara->dir = 2;
+                chara->dir1 = false;
+                if (!chara->needstop) { // 只有在不需要停止时才更新位置
+                    _Character_update_position(self, -3, 0);
+                }
+            }
+            else if (key_state[ALLEGRO_KEY_S])
+            {
+                chara->dir = 1;
+                if (!chara->needstop) {
+                    _Character_update_position(self, 0, 3);
+                }        
+            }
+            else if (key_state[ALLEGRO_KEY_W])
+            {
+                chara->dir = 4;
+                chara->dir1 = true;
+                if (!chara->needstop) {
+                    _Character_update_position(self, 0, -3);
+                }               
+            }
+            else if (key_state[ALLEGRO_KEY_D])
+            {
+                chara->dir = 3;
+                if (!chara->needstop) {
+                    _Character_update_position(self, 3, 0);
+                }        
+            }           
+            else  {
+                chara->state = DIED;
+            }
         }
-        if (chara->gif_status[chara->state]->done)
+        else
             chara->state = STOP;
     }
-    else if (chara->state == ATK)
-    {
-        if (chara->gif_status[chara->state]->done)
-        {
-            chara->state = STOP;
-            chara->new_boom = false;
-        }
-        if (chara->gif_status[ATK]->display_index == 1 && chara->new_boom == false)
-        {
-            Elements *boom;
-            boom = New_Boom(Boom_L,
-                                chara->currentx + 5,
-                                chara->currenty - 20,
-                                3);
-            
-            
-            _Register_elements(scene, boom);
-            chara->new_boom = true;
-        }
-    }
-    
-    
+      
 }
 void Character_draw(Elements *self)
 {
     // with the state, draw corresponding image
     Character *chara = ((Character *)(self->pDerivedObj));
     ALLEGRO_BITMAP *frame = algif_get_bitmap(chara->gif_status[chara->state], al_get_time());
-    al_draw_rectangle(chara->x,
+
+    al_draw_rectangle(chara->x + 6,
                         chara->y + 50,
-                        chara->x + 53,
+                        chara->x + 47,
                         chara->y + 85, al_map_rgb(255, 0, 0), 2);
     al_draw_rectangle(chara->currentx,
                         chara->currenty,
-                        chara->currentx + 80,
-                        chara->currenty + 52, al_map_rgb(0, 255, 0), 2);
+                        chara->currentx + 67.5,
+                        chara->currenty + 65.5, al_map_rgb(0, 255, 0), 2);
     if (frame)
     {
         al_draw_bitmap(frame, chara->x, chara->y,0);
@@ -215,6 +343,7 @@ void Character_destory(Elements *self)
     for (int i = 0; i < 3; i++)
         algif_destroy_animation(Obj->gif_status[i]);
     free(Obj->hitbox);
+    free(Obj->timer);
     free(Obj);
     free(self);
 }
@@ -272,16 +401,19 @@ void _Character_update_position(Elements *self, int dx, int dy)
     chara->y += dy;
     chara->hitbox->update_center_x(chara->hitbox, dx);
     chara->hitbox->update_center_y(chara->hitbox, dy);
-    int gamex[11] ={28, 105, 185, 260, 337, 415, 492, 570, 647, 725};
-    int gamey[9] ={182, 234, 285, 337, 388, 440, 491, 543};
-    int detactx[12] ={67, 144, 221, 298, 375, 452, 529, 606, 683, 760, 837};
-    int detacty[11] ={157, 208, 259, 310, 361, 412, 463, 514, 565, 616, 667};
-
-    int min_dist_x = abs(chara->x + 25 - detactx[0]);
-    chara->currentx = detactx[0];
-    for (int i = 1; i < 11; i++)
+    // pDerivedObj->x = 235; 
+    // pDerivedObj->y = 55; 
+    // pDerivedObj->width = 67; //range67.1
+    // pDerivedObj->height = 65; //range64.5 from guidemap
+    int gamex[9] ={167.9, 235, 302.1, 369.2, 436.3, 503.4, 570.5, 637.6, 704.7};
+    int gamey[9] ={55, 119.5, 184, 248.5, 313, 377.5, 442, 506.5, 571};
+    int detx[9] ={201.45, 268.55, 335.65, 402.75, 469.85, 536.95, 604.05, 671.15, 738.25};
+    int dety[9] ={87.25, 151.75, 216.25, 280.75, 345.25, 409.75, 474.25, 538.75, 603.25};
+    int min_dist_x = abs(chara->x + 25 - dety[0]);
+    chara->currentx = gamex[0];
+    for (int i = 1; i <= 7; i++)
     {
-        int dist_x = abs(chara->x + 25 - detactx[i]);
+        int dist_x = abs(chara->x + 25 - detx[i]);
         if (dist_x < min_dist_x)
         {
             min_dist_x = dist_x;
@@ -290,15 +422,15 @@ void _Character_update_position(Elements *self, int dx, int dy)
     }
 
     // Find nearest y grid position
-    int min_dist_y = abs(chara->y + 67 - detacty[0]);
-    chara->currenty = detacty[0];
-    for (int i = 1; i < 10; i++)
+    int min_dist_y = abs(chara->y + 67 - dety[0]);
+    chara->currenty = gamey[0];
+    for (int i = 1; i <= 7; i++)
     {
-        int dist_y = abs(chara->y + 67 - detacty[i]);
+        int dist_y = abs(chara->y + 67 - dety[i]);
         if (dist_y < min_dist_y)
         {
             min_dist_y = dist_y;
-            chara->currenty = gamey[i-1];
+            chara->currenty = gamey[i];
         }
     }
 
@@ -336,7 +468,40 @@ void Character_interact(Elements *self, Elements *tar) {
     else if (tar->label == Obstacle_L) 
     {
         Obstacle *obstacle = ((Obstacle *)(tar->pDerivedObj));
-        if (obstacle->hitbox->overlap(obstacle->hitbox, obj->hitbox)) 
+        if (obstacle->hitbox->overlap(obstacle->hitbox, obj->hitbox))
+            //obstacle->hitbox2->overlap(obstacle->hitbox2, obj->hitbox) )
+            // obstacle->hitbox3->overlap(obstacle->hitbox3, obj->hitbox) ||
+            // obstacle->hitbox4->overlap(obstacle->hitbox4, obj->hitbox)) 
+        {
+            obj->needstop = true;
+        }
+        for(int i = 0; i < 3; i++) {
+            if(obj->needstop) {
+            // Adjust character's position
+            _Character_update_position(self, 0, 0);
+            
+            // Check for collision again after adjustment
+            if (obstacle->hitbox->overlap(obstacle->hitbox, obj->hitbox)) {
+                obj->needstop = true; // If collision still occurs, keep the character stopped
+            } else {
+                obj->needstop = false; // If collision resolved, resume character's movement
+            }
+            
+            // Return after adjusting position and resolving collision
+            return;
+            } else {
+            // If no collision, break out of the loop
+            break;
+            }
+        }
+    }
+    else if (tar->label == Obstacle1_L) 
+    {
+        Obstacle1 *obstacle = ((Obstacle1 *)(tar->pDerivedObj));
+        if (obstacle->hitbox->overlap(obstacle->hitbox, obj->hitbox))
+            //obstacle->hitbox2->overlap(obstacle->hitbox2, obj->hitbox) )
+            // obstacle->hitbox3->overlap(obstacle->hitbox3, obj->hitbox) ||
+            // obstacle->hitbox4->overlap(obstacle->hitbox4, obj->hitbox)) 
         {
             obj->needstop = true;
         }

@@ -7,15 +7,43 @@ Scene *New_GameScene(int label)
     GameScene *pDerivedObj = (GameScene *)malloc(sizeof(GameScene));
     Scene *pObj = New_Scene(label);
     // setting derived object member
-    pDerivedObj->background = al_load_bitmap("assets/image/Bomberman_background.png");
+    pDerivedObj->background = al_load_bitmap("assets/image/newmap.png");
     pObj->pDerivedObj = pDerivedObj;
     // register element
     //_Register_elements(pObj, New_Floor(Floor_L));
     //_Register_elements(pObj, New_Teleport(Teleport_L));
     //_Register_elements(pObj, New_Tree(Tree_L));
-    //_Register_elements(pObj, New_Charac2(Charac2_L));
+    _Register_elements(pObj, New_Character2(Character2_L));
     _Register_elements(pObj, New_Character(Character_L));
-    _Register_elements(pObj, New_Obstacle(Obstacle_L));
+    // int gamex[17] ={167.9, 235, 302.1, 369.2, 436.3, 503.4, 570.5, 637.6, 704.7, 771.8, 838.9, 906, 973.1, 1040.2, 1107.3, 1176.4, 1241.5, 1308.6};
+    // int gamey[15] ={55, 119.5, 184, 248.5, 313, 377.5, 442, 506.5, 571, 635.5, 700, 764.5, 829, 893.5, 958};
+    // for(int i = 0;i<15;i++) {
+    //     _Register_elements(pObj, New_Obstacle(Obstacle_L, 235 + i * 67.1, 55));
+    //     _Register_elements(pObj, New_Obstacle(Obstacle_L, 235 , 55 + i * 64.7));
+    //     _Register_elements(pObj, New_Obstacle(Obstacle_L, 1178.4, 55 + i * 64.7));
+    //     _Register_elements(pObj, New_Obstacle(Obstacle_L, 235  + i * 67.1, 958));
+    // }
+    for(int i = 0;i<7;i += 2) {
+        for(int j = 0;j<7;j += 2) {
+            _Register_elements(pObj, New_Obstacle(Obstacle_L, 304.2 + i * 67.3, 184 + j * 64.7));
+        }
+    }
+    for(int i = 0;i<7;i++) {
+        for(int j = 0;j<4;j += 2) {
+        _Register_elements(pObj, New_Obstacle1(Obstacle1_L, 371.5 + j * 67.3, 119.3 + i * 64.6)); 
+        if(i<4)
+            _Register_elements(pObj, New_Obstacle1(Obstacle1_L, 438.8, 119.3 + i * 2 * 64.6));
+        
+        }
+    }
+    for(int i = 0;i<3;i++) {
+        _Register_elements(pObj, New_Obstacle1(Obstacle1_L, 236.9, 248.7 + i * 64.6));
+        _Register_elements(pObj, New_Obstacle1(Obstacle1_L, 637.6, 248.7 + i * 64.6));
+    }
+    for(int i = 0;i<3;i += 2) {
+        _Register_elements(pObj, New_Obstacle1(Obstacle1_L, 304.2, 248.7 + i * 64.6));
+        _Register_elements(pObj, New_Obstacle1(Obstacle1_L, 570.5, 248.7 + i * 64.6));
+    }    
     //_Register_elements(pObj, New_Guidemap(Guidemap_L));
     _Register_elements(pObj, New_Heart(Heart_L));
     // setting derived object function

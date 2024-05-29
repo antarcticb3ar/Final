@@ -15,7 +15,8 @@ typedef enum CharacterType
 {
     STOP = 0,
     MOVE,
-    ATK
+    ATK,
+    DIED
 } CharacterType;
 typedef struct _Character
 {
@@ -30,11 +31,12 @@ typedef struct _Character
     int remain; //剩下多少血
     bool invincible;
     double invincible_start_time;
-    ALGIF_ANIMATION *gif_status[3]; // gif for each state. 0: stop, 1: move, 2:attack
+    ALGIF_ANIMATION *gif_status[4]; // gif for each state. 0: stop, 1: move, 2:attack
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
-    int anime;      // counting the time of animation
-    int anime_time; // indicate how long the animation
+    ALLEGRO_TIMER *timer;
     bool new_boom;
+    int anime;      // counting the time of animation
+    int anime_time; // indicate how long the animation   
     Shape *hitbox; // the hitbox of object
     Shape *hitbox2; // the hitbox of need put boom
 } Character;
