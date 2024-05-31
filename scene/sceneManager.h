@@ -4,7 +4,7 @@
 extern Scene *scene;
 typedef enum SceneType
 {
-    Video_L = 0,
+    Video_L,
     Menu_L,
     GameScene_L,
     End_L

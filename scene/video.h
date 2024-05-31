@@ -1,21 +1,28 @@
-#ifndef VIDEO_SCENE_H_INCLUDED
-#define VIDEO_SCENE_H_INCLUDED
-
+#ifndef video_H_INCLUDED
+#define video_H_INCLUDED
 #include "scene.h"
-#include <allegro5/allegro_video.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 /*
-   [Video Scene object]
+   [video object]
 */
-typedef struct _VideoScene
+typedef struct _Video
 {
-    ALLEGRO_VIDEO *video;
-    bool video_end;
-} VideoScene;
-
+    ALLEGRO_FONT *font;
+    ALLEGRO_SAMPLE *song;
+    ALLEGRO_SAMPLE_INSTANCE *sample_instance;
+    ALLEGRO_TIMER *timer;
+    ALLEGRO_BITMAP **frame;
+    int current_frame;
+    int total_frame;
+} Video;
 Scene *New_Video(int label);
-void video_update(Scene *self);
-void video_draw(Scene *self);
-void video_destroy(Scene *self);
+void Video_update(Scene *self);
+void Video_draw(Scene *self);
+void Video_destroy(Scene *self);
 
 #endif

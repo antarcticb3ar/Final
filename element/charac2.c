@@ -40,8 +40,8 @@ Elements *New_Character2(int label)
     pDerivedObj->height = pDerivedObj->gif_status[0]->height - 270;
     pDerivedObj->x = 637.6 + 16;
     pDerivedObj->y = 506.5 - 45;
-    pDerivedObj->currentx = 302;
-    pDerivedObj->currenty = 120;
+    pDerivedObj->currentx = 637.6;
+    pDerivedObj->currenty = 506.5;
     // pDerivedObj->x = 235; 
     // pDerivedObj->y = 55; 
     // pDerivedObj->width = 67; //range67.1

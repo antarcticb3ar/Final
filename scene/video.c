@@ -1,67 +1,83 @@
+#include <allegro5/allegro_primitives.h>
 #include "video.h"
+#include "../global.h"
 #include <stdbool.h>
-
+#define FRAME_DURATION 0.1
+#define TOTAL_FRAME 35
 /*
-   [Video Scene function]
+   [Video function]
 */
+
 Scene *New_Video(int label)
 {
-    VideoScene *pDerivedObj = (VideoScene *)malloc(sizeof(VideoScene));
+    Video *pDerivedObj = (Video *)malloc(sizeof(Video));
     Scene *pObj = New_Scene(label);
 
-    // Load video file
-    pDerivedObj->video = al_open_video("assets/video/intro.mp4");
-    if (!pDerivedObj->video) {
-        fprintf(stderr, "Failed to open video file.\n");
-        free(pDerivedObj);
-        free(pObj);
-        return NULL;
-    }
+    pDerivedObj->total_frame = TOTAL_FRAME;
+    pDerivedObj->frame = (ALLEGRO_BITMAP **)malloc(sizeof(ALLEGRO_BITMAP *) *pDerivedObj->total_frame);
+    for(int i = 0; i < pDerivedObj->total_frame; i++){
+    char filepath[1000];
+    snprintf(filepath, sizeof(filepath), "assets/video/%d.png", i+1);
+    pDerivedObj->frame[i] = al_load_bitmap(filepath);
+    }    
+    
+    // setting derived object member
+    pDerivedObj->font = al_load_ttf_font("assets/font/Pixellettersfull-BnJ5.ttf", 48, 0);
+    // Load sound
+    pDerivedObj->song = al_load_sample("assets/sound/ls5b0-poo7o.mp3");
+    al_reserve_samples(20);
 
-    // Start video playback
-    al_start_video(pDerivedObj->video, al_get_default_mixer());
-
-    pDerivedObj->video_end = false;
+    pDerivedObj->sample_instance = al_create_sample_instance(pDerivedObj->song);
+    pDerivedObj->timer = al_create_timer(FRAME_DURATION);
+    pDerivedObj->current_frame = 0;
+    al_start_timer(pDerivedObj->timer);
     pObj->pDerivedObj = pDerivedObj;
-
+    
     // Setting derived object functions
-    pObj->Update = video_update;
-    pObj->Draw = video_draw;
-    pObj->Destroy = video_destroy;
-
+    pObj->Update = Video_update;
+    pObj->Draw = Video_draw;
+    pObj->Destroy = Video_destroy;
+    
     return pObj;
 }
-
-void video_update(Scene *self)
+void Video_update(Scene *self)
 {
-    VideoScene *Obj = (VideoScene *)(self->pDerivedObj);
-
-    // Check if video has ended
-    if (!Obj->video_end && !al_is_video_playing(Obj->video)) {
-        Obj->video_end = true;
-        // Handle end of video, e.g., transition to the next scene
-    }
-}
-
-void video_draw(Scene *self)
-{
-    VideoScene *Obj = (VideoScene *)(self->pDerivedObj);
-
-    // Draw video frame
-    if (al_is_video_playing(Obj->video)) {
-        ALLEGRO_BITMAP *frame = al_get_video_frame(Obj->video);
-        if (frame) {
-            al_draw_bitmap(frame, 0, 0, 0);
+    Video *Obj = (Video *)(self->pDerivedObj);
+    
+    
+    if (al_get_timer_count(Obj->timer) >= Obj->current_frame) {
+        Obj->current_frame++;
+        if (Obj->current_frame >= Obj->total_frame) {
+            self->scene_end = true;
+            window = 1;
         }
     }
 }
-
-void video_destroy(Scene *self)
+void Video_draw(Scene *self)
 {
-    VideoScene *Obj = (VideoScene *)(self->pDerivedObj);
-    if (Obj->video) {
-        al_close_video(Obj->video);
+    Video *Obj = ((Video *)(self->pDerivedObj));   
+    al_draw_bitmap(Obj->frame[Obj->current_frame], 0, 0, 0);
+    /*al_draw_bitmap(Obj->background, 0, 0, 0);
+    al_draw_text(Obj->font, al_map_rgb(0, 0, 0), Obj->title_x, Obj->title_y, ALLEGRO_ALIGN_CENTRE, "Press 'Enter'");
+    for (int i = 0; i < Obj->option_count; i++)
+    {
+        ALLEGRO_COLOR color = (i == Obj->current_option) ? al_map_rgb(255, 0, 0) : al_map_rgb(0, 0, 0);
+        al_draw_text(Obj->font, color, Obj->option_x, Obj->option_y_start + i * Obj->option_spacing, ALLEGRO_ALIGN_CENTRE, Obj->options[i]);
     }
+    
+
+    al_play_sample_instance(Obj->sample_instance);*/
+
+}
+void Video_destroy(Scene *self)
+{
+    Video *Obj = (Video *)(self->pDerivedObj);
+    for(int i = 0; i < Obj->total_frame; i++) {
+        al_destroy_bitmap(Obj->frame[i]);
+    }
+    
+    al_destroy_timer(Obj->timer);
+    //al_destroy_sample(Obj->song);
     free(Obj);
     free(self);
 }

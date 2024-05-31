@@ -11,7 +11,7 @@ void create_scene(SceneType type)
         scene = New_Video(Video_L);
         break;
     case Menu_L:
-        scene = New_Menu(Menu_L);
+       scene = New_Menu(Menu_L);
         break;   
     case GameScene_L:
         scene = New_GameScene(GameScene_L);
@@ -23,3 +23,4 @@ void create_scene(SceneType type)
         break;
     }
 }
+

@@ -2,6 +2,7 @@
 #include "GAME_ASSERT.h"
 #include "global.h"
 #include "shapes/Shape.h"
+#include "scene/video.h"
 // include allegro
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
@@ -22,7 +23,7 @@ Game *New_Game()
     game->game_update = game_update;
     game->game_draw = game_draw;
     game->game_destroy = game_destroy;
-    game->title = "Final Project 111012034, 1110120xx";
+    game->title = "Final Project 111012034, 111012022";
     game->display = NULL;
     game->game_init(game);
     return game;
@@ -98,7 +99,8 @@ void game_init(Game *self)
     self->display = al_create_display(WIDTH, HEIGHT);
     GAME_ASSERT(self->display, "failed to create display.");
     // Create first scene
-    create_scene(Menu_L);
+    create_scene(Video_L);
+    //create_scene(Menu_L);
     // create event queue
     event_queue = al_create_event_queue();
     GAME_ASSERT(event_queue, "failed to create event queue.");
@@ -160,3 +162,4 @@ void game_destroy(Game *self)
     scene->Destroy(scene);
     free(self);
 }
+
