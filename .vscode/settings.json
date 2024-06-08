@@ -18,6 +18,16 @@
 		"allegro_primitives.h": "c",
 		"stdbool.h": "c",
 		"charac2.h": "c",
-		"circle.h": "c"
+		"circle.h": "c",
+		"allegro_video.h": "c",
+		"allegro_native_dialog.h": "c",
+		"boarder.h": "c",
+		"heart2.h": "c",
+		"qualityitem.h": "c",
+		"stdio.h": "c",
+		"global.h": "c",
+		"speeditem.h": "c",
+		"poweritem.h": "c",
+		"charater.h": "c"
 	}
 }

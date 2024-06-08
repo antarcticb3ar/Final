@@ -1,5 +1,6 @@
 #include "boomrange.h"
 #include "boom.h"
+#include "boom2.h"
 #include "boarder.h"
 #include "charater.h"
 #include "charac2.h"
@@ -37,6 +38,8 @@ Elements *New_Boomrange(int label, int x, int y)
     pObj->inter_obj[pObj->inter_len++] = Obstacle1_L;
     pObj->inter_obj[pObj->inter_len++] = Boarder_L;
     pObj->inter_obj[pObj->inter_len++] = Boom_L;
+    pObj->inter_obj[pObj->inter_len++] = Boom2_L;
+    pObj->inter_obj[pObj->inter_len++] = Boomrange_L;
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
     pObj->Update = Boomrange_update;
@@ -49,7 +52,7 @@ Elements *New_Boomrange(int label, int x, int y)
 void Boomrange_update(Elements *self)
 {
     Boomrange *Obj = ((Boomrange *)(self->pDerivedObj));
-    if (al_get_timer_count(Obj->timer) >= 0.28)
+    if (al_get_timer_count(Obj->timer) >= 0.28 )
     {
         self->dele = (self); 
     }
@@ -100,6 +103,13 @@ void Boomrange_interact(Elements *self, Elements *tar)
             obs->instant = true;
         }       
     }
+    else if (tar->label == Boom2_L)
+    {
+        Boom2 *obs = ((Boom2 *)(tar->pDerivedObj));
+        if (obs->hitbox->overlap(obs->hitbox, Obj->hitbox)) {  
+            obs->instant = true;
+        }       
+    }
     else if (tar->label == Boarder_L)
     {
         Boarder *obs = ((Boarder *)(tar->pDerivedObj));
@@ -112,10 +122,10 @@ void Boomrange_draw(Elements *self)
 {
     Boomrange *Obj = ((Boomrange *)(self->pDerivedObj));
     al_draw_bitmap(Obj->img, Obj->x, Obj->y, ALLEGRO_FLIP_HORIZONTAL);
-    al_draw_rectangle(Obj->x + 14,
-                        Obj->y + 16,
-                        Obj->x + 68.1,
-                        Obj->y + 64, al_map_rgb(255, 0, 0), 2);
+    // al_draw_rectangle(Obj->x + 14,
+    //                     Obj->y + 16,
+    //                     Obj->x + 68.1,
+    //                     Obj->y + 64, al_map_rgb(255, 0, 0), 2);
 }
 void Boomrange_destory(Elements *self)
 {

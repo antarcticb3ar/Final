@@ -13,11 +13,11 @@
 #include <allegro5/allegro_primitives.h>
 
 /*
-   [Boom function]
+   [Boom2 function]
 */
-Elements *New_Boom(int label, int x, int y, int q)
+Elements *New_Boom2(int label, int x, int y, int q)
 {
-    Boom *pDerivedObj = (Boom *)malloc(sizeof(Boom));
+    Boom2 *pDerivedObj = (Boom2 *)malloc(sizeof(Boom2));
     Elements *pObj = New_Elements(label);
     // setting derived object member
     pDerivedObj->img = algif_new_gif("assets/image/boom.gif", 1.5);
@@ -29,7 +29,7 @@ Elements *New_Boom(int label, int x, int y, int q)
                                         pDerivedObj->y + 10,
                                         pDerivedObj->x + 66.1,
                                         pDerivedObj->y + 68);
-    pDerivedObj->instant = false;                                        
+                                        pDerivedObj->instant = false;                                        
     pDerivedObj->nextRange = 1;
 
     pDerivedObj->stopRight = false;
@@ -37,11 +37,11 @@ Elements *New_Boom(int label, int x, int y, int q)
     pDerivedObj->stopUp = false;
     pDerivedObj->stopDown = false;
 
-    pDerivedObj->timer = al_create_timer(1.2);
+    pDerivedObj->instant = false;                                        
     pDerivedObj->exploded = false;
+    pDerivedObj->timer = al_create_timer(1.2);
     pDerivedObj->characteron1 = true;
     pDerivedObj->characteron2 = true;
-    
     al_start_timer(pDerivedObj->timer);                                     
     // setting the interact object
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
@@ -52,16 +52,16 @@ Elements *New_Boom(int label, int x, int y, int q)
     //pObj->inter_obj[pObj->inter_len++] = Floor_L;
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;
-    pObj->Update = Boom_update;
-    pObj->Interact = Boom_interact;
-    pObj->Draw = Boom_draw;
-    pObj->Destroy = Boom_destory;
+    pObj->Update = Boom2_update;
+    pObj->Interact = Boom2_interact;
+    pObj->Draw = Boom2_draw;
+    pObj->Destroy = Boom2_destory;
 
     return pObj;
 }
-void Boom_update(Elements *self)
+void Boom2_update(Elements *self)
 {
-    Boom *Obj = ((Boom *)(self->pDerivedObj));
+    Boom2 *Obj = ((Boom2 *)(self->pDerivedObj));
     if (al_get_timer_count(Obj->timer) >= 1.2 || Obj->instant) // Timer reached 1.5 seconds
     {
         // Create a Boomrange object when the bomb is about to be destroyed
@@ -79,8 +79,8 @@ void Boom_update(Elements *self)
             _Register_elements(scene, boomrange);
             boomrange = New_Boomrange(Boomrange_L, Obj->x, Obj->y - 65.5 * i);
             _Register_elements(scene, boomrange);
-            quality++;
-            while (power1 >= Obj->nextRange)
+            quality2++;
+            while (power2 >= Obj->nextRange)
             {
                 if (!Obj->stopUp)
                 {
@@ -123,10 +123,10 @@ void Boom_update(Elements *self)
         self->dele = true; // Mark the bomb for deletion
     }
 }
-void _Boom_update_position(Elements *self, int dx, int dy) {}
-void Boom_interact(Elements *self, Elements *tar)
+void _Boom2_update_position(Elements *self, int dx, int dy) {}
+void Boom2_interact(Elements *self, Elements *tar)
 {
-    Boom *Obj = ((Boom *)(self->pDerivedObj));
+    Boom2 *Obj = ((Boom2 *)(self->pDerivedObj));
     if (tar->label == Character_L)
     {
         Character *chara = ((Character *)(tar->pDerivedObj));
@@ -169,7 +169,7 @@ void Boom_interact(Elements *self, Elements *tar)
     {
         Obstacle *obs = ((Obstacle *)(tar->pDerivedObj));
         
-        if(power1 >= Obj->nextRange) {
+        if(power2 >= Obj->nextRange) {
             if (!Obj->stopUp){
                 int newY = Obj->y - 65.5 * Obj->nextRange;
                 Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
@@ -210,7 +210,7 @@ void Boom_interact(Elements *self, Elements *tar)
     {
         Obstacle1 *obs = ((Obstacle1 *)(tar->pDerivedObj));
         
-        if(power1 >= Obj->nextRange) {
+        if(power2 >= Obj->nextRange) {
             if (!Obj->stopUp){
                 int newY = Obj->y - 65.5 * Obj->nextRange;
                 Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
@@ -251,7 +251,7 @@ void Boom_interact(Elements *self, Elements *tar)
     {
         Boomrange *obs = ((Boomrange *)(tar->pDerivedObj));
         
-        if(power1>= Obj->nextRange + 1) {
+        if(power2>= Obj->nextRange) {
             int new = Obj->nextRange + 1;
             if (!Obj->stopUp){
                 int newY = Obj->y - 65.5 * new;
@@ -290,21 +290,24 @@ void Boom_interact(Elements *self, Elements *tar)
         
     }
 }
-void Boom_draw(Elements *self)
+void Boom2_draw(Elements *self)
 {
-    Boom *Obj = ((Boom *)(self->pDerivedObj));
+    Boom2 *Obj = ((Boom2 *)(self->pDerivedObj));
     ALLEGRO_BITMAP *frame = algif_get_bitmap(Obj->img, al_get_time());
     if (frame)
     {
         al_draw_bitmap(frame, Obj->x, Obj->y,0);
     }
-    // int newX = Obj->x + 67.1 * Obj->nextRange;
-   // al_draw_rectangle(newX+4,Obj->y + 14,newX + 62.1,Obj->y + 64, al_map_rgb(255, 0, 0), 2);
+
+    // al_draw_rectangle(Obj->x + 2,
+    //                     Obj->y + 10,
+    //                     Obj->x + 66.1,
+    //                     Obj->y + 68, al_map_rgb(255, 0, 0), 2);
     
 }
-void Boom_destory(Elements *self)
+void Boom2_destory(Elements *self)
 {
-    Boom *Obj = ((Boom *)(self->pDerivedObj));
+    Boom2 *Obj = ((Boom2 *)(self->pDerivedObj));
     //al_destroy_sample_instance(Obj->atk_Sound);
     algif_destroy_animation(Obj->img);
     al_destroy_timer(Obj->timer);
@@ -313,5 +316,3 @@ void Boom_destory(Elements *self)
     free(Obj);
     free(self);
 }
-
-

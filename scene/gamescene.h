@@ -11,11 +11,15 @@
 #include "../element/obstacle.h"
 #include "../element/obstacle1.h"
 #include "../element/boom.h"
+#include "../element/boom2.h"
 #include "../element/boomrange.h"
 #include "../element/guidemap.h"
 #include "../element/heart.h"
 #include "../element/heart2.h"
 #include "../element/boarder.h"
+#include "../element/qualityitem.h"
+#include "../element/speeditem.h"
+#include "../element/poweritem.h"
 /*
    [game scene object]
 */
@@ -25,11 +29,15 @@ typedef enum EleType
     Teleport_L,
     Tree_L,   
     Projectile_L,
-    Boomrange_L,
-    Boarder_L,
+    Boomrange_L,   
     Obstacle_L,
     Obstacle1_L,
-    Boom_L,  
+    Qualityitem_L,
+    Poweritem_L,
+    Speeditem_L,
+    Boom_L,
+    Boom2_L,  
+    Boarder_L, 
     Character_L,
     Character2_L,
     Guidemap_L,

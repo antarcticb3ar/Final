@@ -10,13 +10,14 @@ Scene *New_GameScene(int label)
     pDerivedObj->background = al_load_bitmap("assets/image/newmap.png");
     pObj->pDerivedObj = pDerivedObj;
     // register element
+    _Register_elements(pObj, New_Character2(Character2_L));
+    _Register_elements(pObj, New_Character(Character_L));
     _Register_elements(pObj, New_Boarder(Boarder_L, 167.9, 55));
     _Register_elements(pObj, New_Boarder(Boarder_L, 167.9, 571));
     _Register_elements(pObj, New_Boarder(Boarder_L, 704.7, 55));
     //_Register_elements(pObj, New_Teleport(Teleport_L));
     //_Register_elements(pObj, New_Tree(Tree_L));
-    _Register_elements(pObj, New_Character2(Character2_L));
-    _Register_elements(pObj, New_Character(Character_L));
+    
     // int gamex[17] ={167.9, 235, 302.1, 369.2, 436.3, 503.4, 570.5, 637.6, 704.7, 771.8, 838.9, 906, 973.1, 1040.2, 1107.3, 1176.4, 1241.5, 1308.6};
     // int gamey[15] ={55, 119.5, 184, 248.5, 313, 377.5, 442, 506.5, 571, 635.5, 700, 764.5, 829, 893.5, 958};
     // for(int i = 0;i<15;i++) {

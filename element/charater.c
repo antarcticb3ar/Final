@@ -1,5 +1,5 @@
 #include "charater.h"
-#include "..\\global.h"
+#include "../global.h"
 #include "obstacle.h"
 #include "obstacle1.h"
 #include "boarder.h"
@@ -46,10 +46,10 @@ Elements *New_Character(int label)
     // pDerivedObj->y = 55; 
     // pDerivedObj->width = 67; //range67.1
     // pDerivedObj->height = 65; //range64.5
-    pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x + 6,
-                                        pDerivedObj->y + 50,
-                                        pDerivedObj->x + 47,
-                                        pDerivedObj->y + 85);
+    pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x + 10,
+                                        pDerivedObj->y + 55,
+                                        pDerivedObj->x + 43,
+                                        pDerivedObj->y + 80);
     pDerivedObj->hitbox2 = New_Rectangle(pDerivedObj->currentx,
                                          pDerivedObj->currenty,
                                          pDerivedObj->currentx + 67.7,
@@ -80,12 +80,10 @@ void Character_update(Elements *self)
 {
     // use the idea of finite state machine to deal with different state
     Character *chara = ((Character *)(self->pDerivedObj));
-    if (chara->invincible && (al_get_time() - chara->invincible_start_time >= 3.0)) {
+    if (chara->invincible && (al_get_time() - chara->invincible_start_time >= 3.5)) {
         chara->invincible = false;
-        printf("Invincibility ended\n");
-    }
+    }   
     if (chara->new_boom && al_get_timer_count(chara->timer) >= 0.1) {
-        quality++;
         chara->new_boom = false;
     }  
     
@@ -159,7 +157,7 @@ void Character_update(Elements *self)
             chara->dir = 2;
             chara->dir1 = false;
             if (!chara->needstop) { // 只有在不需要停止时才更新位置
-                _Character_update_position(self, -3, 0);
+                _Character_update_position(self, -speed1, 0);
             }
             if(chara->invincible) {
                 chara->state = DIED;
@@ -171,7 +169,7 @@ void Character_update(Elements *self)
         {
             chara->dir = 1;
             if (!chara->needstop) {
-                _Character_update_position(self, 0, 3);
+                _Character_update_position(self, 0, speed1);
             }
             if(chara->invincible) {
                 chara->state = DIED;
@@ -184,7 +182,7 @@ void Character_update(Elements *self)
             chara->dir = 4;
             chara->dir1 = true;
             if (!chara->needstop) {
-                _Character_update_position(self, 0, -3);
+                _Character_update_position(self, 0, -speed1);
             }   
             if(chara->invincible) {
                 chara->state = DIED;
@@ -196,7 +194,7 @@ void Character_update(Elements *self)
         {
             chara->dir = 3;
             if (!chara->needstop) {
-                _Character_update_position(self, 3, 0);
+                _Character_update_position(self, speed1, 0);
             }    
             if(chara->invincible) {
                 chara->state = DIED;
@@ -220,18 +218,18 @@ void Character_update(Elements *self)
             }  
             else chara->state = STOP;       
         }
-        if (quality > 0 && !chara->new_boom && chara->gif_status[ATK]->display_index == 1)
+        if (quality >= 0 && !chara->new_boom  && chara->gif_status[ATK]->display_index == 1)
         {
+            chara->new_boom = true; 
+            al_start_timer(chara->timer); 
             Elements *boom;
             boom = New_Boom(Boom_L,
                                 chara->currentx + 3,
                                 chara->currenty - 6,
                                 3);          
-            _Register_elements(scene, boom);
-            al_start_timer(chara->timer); 
-            chara->new_boom = true; 
-            printf("%d\n", quality);
-            quality--;            
+            _Register_elements(scene, boom); 
+            quality--;                      
+            printf("%d\n", quality);                      
         }
         else if (key_state[ALLEGRO_KEY_SPACE])
         {
@@ -242,14 +240,14 @@ void Character_update(Elements *self)
             chara->dir = 2;
             chara->dir1 = false;
             if (!chara->needstop) { // 只有在不需要停止时才更新位置
-                _Character_update_position(self, -3, 0);
+                _Character_update_position(self, -speed1, 0);
             }
         }
         else if (key_state[ALLEGRO_KEY_S])
         {
             chara->dir = 1;
             if (!chara->needstop) {
-                _Character_update_position(self, 0, 3);
+                _Character_update_position(self, 0, speed1);
             }        
         }
         else if (key_state[ALLEGRO_KEY_W])
@@ -257,14 +255,14 @@ void Character_update(Elements *self)
             chara->dir = 4;
             chara->dir1 = true;
             if (!chara->needstop) {
-                _Character_update_position(self, 0, -3);
+                _Character_update_position(self, 0, -speed1);
             }               
         }
         else if (key_state[ALLEGRO_KEY_D])
         {
             chara->dir = 3;
             if (!chara->needstop) {
-                _Character_update_position(self, 3, 0);
+                _Character_update_position(self, speed1, 0);
             }        
         }
                  
@@ -281,14 +279,14 @@ void Character_update(Elements *self)
                 chara->dir = 2;
                 chara->dir1 = false;
                 if (!chara->needstop) { // 只有在不需要停止时才更新位置
-                    _Character_update_position(self, -3, 0);
+                    _Character_update_position(self, -speed1, 0);
                 }
             }
             else if (key_state[ALLEGRO_KEY_S])
             {
                 chara->dir = 1;
                 if (!chara->needstop) {
-                    _Character_update_position(self, 0, 3);
+                    _Character_update_position(self, 0, speed1);
                 }        
             }
             else if (key_state[ALLEGRO_KEY_W])
@@ -296,14 +294,14 @@ void Character_update(Elements *self)
                 chara->dir = 4;
                 chara->dir1 = true;
                 if (!chara->needstop) {
-                    _Character_update_position(self, 0, -3);
+                    _Character_update_position(self, 0, -speed1);
                 }               
             }
             else if (key_state[ALLEGRO_KEY_D])
             {
                 chara->dir = 3;
                 if (!chara->needstop) {
-                    _Character_update_position(self, 3, 0);
+                    _Character_update_position(self, speed1, 0);
                 }        
             }           
             else  {
@@ -369,29 +367,29 @@ void _Character_update_position(Elements *self, int dx, int dy)
         {     
             if(chara->dir == 4) 
             {
-                chara->y += 3;
-                chara->hitbox->update_center_y(chara->hitbox, 3);
+                chara->y += speed1;
+                chara->hitbox->update_center_y(chara->hitbox, speed1);
                 chara->needstop = false; 
                 return;
             }
             else if(chara->dir == 3) 
             {
-                chara->x -= 3;
-                chara->hitbox->update_center_x(chara->hitbox, -3);
+                chara->x -= speed1;
+                chara->hitbox->update_center_x(chara->hitbox, -speed1);
                 chara->needstop = false;   
                 return;
             }
             else if(chara->dir == 2) 
             {
-                chara->x += 3;
-                chara->hitbox->update_center_x(chara->hitbox, 3);
+                chara->x += speed1;
+                chara->hitbox->update_center_x(chara->hitbox, speed1);
                 chara->needstop = false;   
                 return;
             }
             else if(chara->dir == 1) 
             {
-                chara->y -= 3;
-                chara->hitbox->update_center_y(chara->hitbox, -3);
+                chara->y -= speed1;
+                chara->hitbox->update_center_y(chara->hitbox, -speed1);
                 chara->needstop = false;   
                 return;
             }            
@@ -543,7 +541,9 @@ void Character_interact(Elements *self, Elements *tar) {
             _Character_update_position(self, 0, 0);
             
             // Check for collision again after adjustment
-            if (boarder->hitbox->overlap(boarder->hitbox, obj->hitbox)) {
+            if(boarder->hitbox->overlap(boarder->hitbox, obj->hitbox)
+            ||
+            boarder->hitbox2->overlap(boarder->hitbox2, obj->hitbox)) {
                 obj->needstop = true; // If collision still occurs, keep the character stopped
             } else {
                 obj->needstop = false; // If collision resolved, resume character's movement

@@ -11,7 +11,6 @@
 /*
    [character object]
 */
-
 typedef struct _Character2
 {
     int x, y;
@@ -42,3 +41,4 @@ void Character2_draw(Elements *self);
 void Character2_destory(Elements *self);
 
 #endif
+
