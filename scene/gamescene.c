@@ -95,9 +95,37 @@ void game_scene_update(Scene *self)
     }
     
 }    
+ElementVec allEle = _Get_all_elements(self);
+    for (int i = 0; i < allEle.len; i++)
+    {
+        allEle.arr[i]->Update(allEle.arr[i]);
+    }
+
+    // run interact for every element
+    for (int i = 0; i < allEle.len; i++)
+    {
+        Elements *ele = allEle.arr[i];
+        // run every interact object
+        for (int j = 0; j < ele->inter_len; j++)
+        {
+            int inter_label = ele->inter_obj[j];
+            ElementVec labelEle = _Get_label_elements(self, inter_label);
+            for (int i = 0; i < labelEle.len; i++)
+            {
+                ele->Interact(ele, labelEle.arr[i]);
+            }
+        }
+    }
+    // remove element
+    for (int i = 0; i < allEle.len; i++)
+    {
+        Elements *ele = allEle.arr[i];
+        if (ele->dele)
+            _Remove_elements(self, ele);
+    }
+}
+
 void game_scene_draw(Scene *self)
-{
-    void game_scene_draw(Scene *self)
 {    
     static bool drawDeath = false;
     static Elements *deadCharacter = NULL;
@@ -122,7 +150,7 @@ void game_scene_draw(Scene *self)
 
     if (drawDeath) {
         // Draw black background
-        //al_draw_bitmap(gs->black, 0, 0, 0); 
+        al_draw_bitmap(gs->black, 0, 0, 0); 
         
         // Draw only the dead character
         if (deadCharacter) {
@@ -138,7 +166,7 @@ void game_scene_draw(Scene *self)
         }
     }
 }
-}
+
 void game_scene_destroy(Scene *self)
 {
     GameScene *Obj = ((GameScene *)(self->pDerivedObj));
