@@ -1,4 +1,7 @@
 #include "gamescene.h"
+#include "../global.h"
+#include <allegro5/allegro_primitives.h>
+#include <stdbool.h>
 /*
    [GameScene function]
 */
@@ -8,6 +11,7 @@ Scene *New_GameScene(int label)
     Scene *pObj = New_Scene(label);
     // setting derived object member
     pDerivedObj->background = al_load_bitmap("assets/image/newmap.png");
+    pDerivedObj->black = al_load_bitmap("assets/image/blackback.png");
     pObj->pDerivedObj = pDerivedObj;
     // register element
     _Register_elements(pObj, New_Character2(Character2_L));
@@ -87,17 +91,42 @@ void game_scene_update(Scene *self)
         if (ele->dele)
             _Remove_elements(self, ele);
     }
+    
 }
 void game_scene_draw(Scene *self)
-{
-    al_clear_to_color(al_map_rgb(0, 0, 0));
+{    
     GameScene *gs = ((GameScene *)(self->pDerivedObj));
-    al_draw_bitmap(gs->background, 0, 0, 0);
     ElementVec allEle = _Get_all_elements(self);
-    for (int i = 0; i < allEle.len; i++)
-    {
-        Elements *ele = allEle.arr[i];
-        ele->Draw(ele);
+    bool di = false;
+    if(remain == 0 && !di) {
+        di = true;       
+        al_draw_bitmap(gs->black, 0, 0, 0); 
+        for (int i = 0; i < allEle.len; i++)
+        {
+            Elements *ele = allEle.arr[i];
+            
+                ele->Draw(ele);
+        }      
+    }
+    else if(remain2 == 0 && !di) {
+        di = true;       
+        al_draw_bitmap(gs->black, 0, 0, 0); 
+        for (int i = 0; i < allEle.len; i++)
+        {
+            Elements *ele = allEle.arr[i];
+            ele->Draw(ele);
+        }      
+    }
+    else {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        
+        al_draw_bitmap(gs->background, 0, 0, 0);
+        
+        for (int i = 0; i < allEle.len; i++)
+        {
+            Elements *ele = allEle.arr[i];
+            ele->Draw(ele);
+        }
     }
 }
 void game_scene_destroy(Scene *self)
@@ -105,6 +134,7 @@ void game_scene_destroy(Scene *self)
     GameScene *Obj = ((GameScene *)(self->pDerivedObj));
     ALLEGRO_BITMAP *background = Obj->background;
     al_destroy_bitmap(background);
+    al_destroy_bitmap(Obj->black);
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
     {

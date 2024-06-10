@@ -7,7 +7,7 @@ const int WIDTH = 900;
 
 const int HEIGHT = 640;
 int window = 0;
-int remain = 3;
+int remain = 1;
 int remain2 = 3;
 int quality = 2;
 int quality2 = 2;

@@ -28,6 +28,7 @@
 		"global.h": "c",
 		"speeditem.h": "c",
 		"poweritem.h": "c",
-		"charater.h": "c"
+		"charater.h": "c",
+		"allegro.h": "c"
 	}
 }
