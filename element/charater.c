@@ -7,6 +7,7 @@
 #include "boom2.h"
 #include "guidemap.h"
 #include "../scene/sceneManager.h"
+#include "../scene/scene.h"
 #include "projectile.h"
 #include "../shapes/Rectangle.h"
 #include "../algif5/src/algif.h"
@@ -22,9 +23,9 @@ Elements *New_Character(int label)
     Elements *pObj = New_Elements(label);
     // setting derived object member
     // load character images
-    char state_string[5][10] = {"stop", "move", "attack", "died"};
-    
-    for (int i = 0; i < 4; i++)
+    char state_string[6][15] = {"stop", "move", "attack", "died", "felldown", "heartbreak"};
+
+    for (int i = 0; i < 6; i++)
     {
         char buffer[50];
         sprintf(buffer, "assets/image/chara_%s.gif", state_string[i]);
@@ -82,13 +83,20 @@ void Character_update(Elements *self)
 {
     // use the idea of finite state machine to deal with different state
     Character *chara = ((Character *)(self->pDerivedObj));
+    if (remain == 0 && chara->state != FELLDOWN && chara->state != HEARTBREAK) {
+        chara->state = FELLDOWN;
+    }
+    if (chara->state == FELLDOWN && chara->gif_status[FELLDOWN]->done) {
+        chara->state = HEARTBREAK;
+    }
+
     if (chara->invincible && (al_get_time() - chara->invincible_start_time >= 3.5)) {
         chara->invincible = false;
     }   
     if (chara->new_boom && al_get_timer_count(chara->timer) >= 0.1) {
         chara->new_boom = false;
-    }  
-    
+    }
+
     if (chara->state == STOP || chara->needstop == true)
     {
         if (key_state[ALLEGRO_KEY_SPACE])
@@ -312,6 +320,14 @@ void Character_update(Elements *self)
         }
         else
             chara->state = STOP;
+    } else if (chara->state == FELLDOWN) {
+        if (chara->gif_status[chara->state]->done) {
+            chara->state = HEARTBREAK;
+        }
+    } else if (chara->state == HEARTBREAK) {
+        if (chara->gif_status[chara->state]->done){
+            return;
+        }
     }
       
 }

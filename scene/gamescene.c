@@ -63,12 +63,17 @@ Scene *New_GameScene(int label)
 void game_scene_update(Scene *self)
 {
     // update every element
+    // if (remain == 0) {
+    //     self->scene_end = true;
+    //     window = 0;
+    // }
+
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
     {
         allEle.arr[i]->Update(allEle.arr[i]);
     }
-
+    
     // run interact for every element
     for (int i = 0; i < allEle.len; i++)
     {
@@ -81,7 +86,7 @@ void game_scene_update(Scene *self)
             for (int i = 0; i < labelEle.len; i++)
             {
                 ele->Interact(ele, labelEle.arr[i]);
-            }
+            } 
         }
     }
     // remove element
@@ -128,7 +133,26 @@ void game_scene_draw(Scene *self)
             ele->Draw(ele);
         }
     }
+
+    // if (drawDeath) {
+    //     // Draw black background
+    //     //al_draw_bitmap(gs->black, 0, 0, 0); 
+        
+    //     // Draw only the dead character
+    //     if (deadCharacter) {
+    //         deadCharacter->Draw(deadCharacter);
+    //     }
+    // } else {
+    //     al_clear_to_color(al_map_rgb(0, 0, 0));
+    //     al_draw_bitmap(gs->background, 0, 0, 0);
+    //     for (int i = 0; i < allEle.len; i++)
+    //     {
+    //         Elements *ele = allEle.arr[i];
+    //         ele->Draw(ele);
+    //     }
+    // }
 }
+
 void game_scene_destroy(Scene *self)
 {
     GameScene *Obj = ((GameScene *)(self->pDerivedObj));
