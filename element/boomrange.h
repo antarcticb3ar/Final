@@ -16,7 +16,7 @@ typedef struct _Boomrange
     int l;             // the long of Boomrange
     int remain; //剩下多少血    
     ALLEGRO_BITMAP *img;
-    ALLEGRO_TIMER *timer, *timer2;
+    ALLEGRO_TIMER *timer;
     ALLEGRO_SAMPLE_INSTANCE *remain_Sound, *remain2_Sound;
     Shape *hitbox; // the hitbox of object
 } Boomrange;
