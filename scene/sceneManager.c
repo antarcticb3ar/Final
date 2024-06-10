@@ -17,10 +17,9 @@ void create_scene(SceneType type)
         scene = New_GameScene(GameScene_L);
         break;
     // case End_L:
-    //     scene = New_End(End_L);
+    //     scene = New_EndGame(End_L);
     //     break;
     default:
         break;
     }
 }
-

@@ -1,4 +1,5 @@
 #include "gamescene.h"
+#include "../global.h"
 /*
    [GameScene function]
 */
@@ -59,12 +60,17 @@ Scene *New_GameScene(int label)
 void game_scene_update(Scene *self)
 {
     // update every element
+    // if (remain == 0) {
+    //     self->scene_end = true;
+    //     window = 0;
+    // }
+
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
     {
         allEle.arr[i]->Update(allEle.arr[i]);
     }
-
+    
     // run interact for every element
     for (int i = 0; i < allEle.len; i++)
     {
@@ -77,7 +83,7 @@ void game_scene_update(Scene *self)
             for (int i = 0; i < labelEle.len; i++)
             {
                 ele->Interact(ele, labelEle.arr[i]);
-            }
+            } 
         }
     }
     // remove element
@@ -87,18 +93,51 @@ void game_scene_update(Scene *self)
         if (ele->dele)
             _Remove_elements(self, ele);
     }
-}
+    
+}    
 void game_scene_draw(Scene *self)
 {
-    al_clear_to_color(al_map_rgb(0, 0, 0));
+    void game_scene_draw(Scene *self)
+{    
+    static bool drawDeath = false;
+    static Elements *deadCharacter = NULL;
+
     GameScene *gs = ((GameScene *)(self->pDerivedObj));
-    al_draw_bitmap(gs->background, 0, 0, 0);
     ElementVec allEle = _Get_all_elements(self);
-    for (int i = 0; i < allEle.len; i++)
-    {
-        Elements *ele = allEle.arr[i];
-        ele->Draw(ele);
+
+    // Check if any character is dead
+    if (!drawDeath) {
+        for (int i = 0; i < allEle.len; i++) {
+            Elements *ele = allEle.arr[i];
+            if (ele->label == Character_L || ele->label == Character2_L) {
+                Character *chara = (Character *)(ele->pDerivedObj);
+                if (chara->state == DIED) {
+                    drawDeath = true;
+                    deadCharacter = ele;
+                    break;
+                }
+            }
+        }
     }
+
+    if (drawDeath) {
+        // Draw black background
+        //al_draw_bitmap(gs->black, 0, 0, 0); 
+        
+        // Draw only the dead character
+        if (deadCharacter) {
+            deadCharacter->Draw(deadCharacter);
+        }
+    } else {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_draw_bitmap(gs->background, 0, 0, 0);
+        for (int i = 0; i < allEle.len; i++)
+        {
+            Elements *ele = allEle.arr[i];
+            ele->Draw(ele);
+        }
+    }
+}
 }
 void game_scene_destroy(Scene *self)
 {

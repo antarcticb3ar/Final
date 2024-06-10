@@ -4,6 +4,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 #include "element.h"
+#include "../scene/scene.h"
 #include "../shapes/Shape.h"
 #include "../algif5/src/algif.h"
 #include <stdbool.h>
@@ -16,7 +17,9 @@ typedef enum CharacterType
     STOP = 0,
     MOVE,
     ATK,
-    DIED
+    DIED,
+    FELLDOWN,
+    HEARTBREAK
 } CharacterType;
 typedef struct _Character
 {
@@ -30,8 +33,9 @@ typedef struct _Character
     int currenty; //現在的y格的座標
     int remain; //剩下多少血
     bool invincible;
+    //swithc_to_EndGame_scene
     double invincible_start_time;
-    ALGIF_ANIMATION *gif_status[4]; // gif for each state. 0: stop, 1: move, 2:attack
+    ALGIF_ANIMATION *gif_status[6]; // gif for each state. 0: stop, 1: move, 2:attack
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     ALLEGRO_TIMER *timer;
     bool new_boom;
