@@ -20,6 +20,7 @@
 #include "../element/qualityitem.h"
 #include "../element/speeditem.h"
 #include "../element/poweritem.h"
+#include "../element/egg.h"
 /*
    [game scene object]
 */
@@ -32,14 +33,15 @@ typedef enum EleType
     Boomrange_L,   
     Obstacle_L,
     Obstacle1_L,
+    Boarder_L,
     Qualityitem_L,
     Poweritem_L,
-    Speeditem_L,
-    Boom_L,
-    Boom2_L,  
-    Boarder_L, 
+    Speeditem_L,    
     Character_L,
     Character2_L,
+    Boom_L,
+    Boom2_L,
+    Egg_L, 
     Guidemap_L,
     Heart_L,
     Heart2_L

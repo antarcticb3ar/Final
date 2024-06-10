@@ -63,9 +63,9 @@ void Speeditem_interact(Elements *self, Elements *tar) {
                 free(Obj->hitbox);
                 Obj->hitbox = New_Rectangle(0, 0, 0, 0);              
                 Obj->eaten1 = true;
-                speed1 = speed1 + 1;
-                if(speed1 >= 4)
-                    speed1 = 4;
+                speed2 = speed2 + 1;
+                if(speed2 >= 4)
+                    speed2 = 4;
                 al_rest(0.01);
             }
             self->dele = true;
@@ -81,9 +81,9 @@ void Speeditem_interact(Elements *self, Elements *tar) {
                 free(Obj->hitbox);
                 Obj->hitbox = New_Rectangle(0, 0, 0, 0);                
                 Obj->eaten2 = true;
-                speed2 = speed2 + 1;
-                if(speed2 >= 4)
-                    speed2 = 4;
+                speed1 = speed1 + 1;
+                if(speed1 >= 4)
+                    speed1 = 4;
                 al_rest(0.01);
             }
             self->dele = true;
