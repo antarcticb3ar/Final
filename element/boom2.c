@@ -1,4 +1,5 @@
-#include "boom.h"
+#include "boom2.h"
+#include "egg.h"
 #include "obstacle.h"
 #include "obstacle1.h"
 #include "boomrange.h"
@@ -20,7 +21,9 @@ Elements *New_Boom2(int label, int x, int y, int q)
     Boom2 *pDerivedObj = (Boom2 *)malloc(sizeof(Boom2));
     Elements *pObj = New_Elements(label);
     // setting derived object member
-    pDerivedObj->img = algif_new_gif("assets/image/boom.gif", 1.5);
+    pDerivedObj->img = al_load_bitmap("assets/image/icebirdegg.png");
+    pDerivedObj->img2 = al_load_bitmap("assets/image/egg.png");
+    //pDerivedObj->img = algif_new_gif("assets/image/boom.gif", 1.5);
     pDerivedObj->x = x;
     pDerivedObj->y = y;
     pDerivedObj->q = q;
@@ -30,8 +33,8 @@ Elements *New_Boom2(int label, int x, int y, int q)
                                         pDerivedObj->x + 66.1,
                                         pDerivedObj->y + 68);
                                         pDerivedObj->instant = false;                                        
-    pDerivedObj->nextRange = 1;
-
+    pDerivedObj->nextRange = 2;
+    
     pDerivedObj->stopRight = false;
     pDerivedObj->stopLeft = false;
     pDerivedObj->stopUp = false;
@@ -40,9 +43,12 @@ Elements *New_Boom2(int label, int x, int y, int q)
     pDerivedObj->instant = false;                                        
     pDerivedObj->exploded = false;
     pDerivedObj->timer = al_create_timer(1.2);
+    pDerivedObj->timeegg = al_create_timer(0.5);
     pDerivedObj->characteron1 = true;
     pDerivedObj->characteron2 = true;
-    al_start_timer(pDerivedObj->timer);                                     
+    pDerivedObj->newegg = false;
+    al_start_timer(pDerivedObj->timer);
+    al_start_timer(pDerivedObj->timeegg);                                     
     // setting the interact object
     pObj->inter_obj[pObj->inter_len++] = Obstacle_L;
     pObj->inter_obj[pObj->inter_len++] = Obstacle1_L;
@@ -62,6 +68,13 @@ Elements *New_Boom2(int label, int x, int y, int q)
 void Boom2_update(Elements *self)
 {
     Boom2 *Obj = ((Boom2 *)(self->pDerivedObj));
+    if (al_get_timer_count(Obj->timeegg) >= 0.5 && !Obj->newegg) {
+        Obj->newegg = true;
+        Elements *egg;
+        egg = New_Egg(Egg_L, Obj->x + 23, Obj->y - 25, 1);
+        _Register_elements(scene, egg);
+    }
+    
     if (al_get_timer_count(Obj->timer) >= 1.2 || Obj->instant) // Timer reached 1.5 seconds
     {
         // Create a Boomrange object when the bomb is about to be destroyed
@@ -80,7 +93,7 @@ void Boom2_update(Elements *self)
             boomrange = New_Boomrange(Boomrange_L, Obj->x, Obj->y - 65.5 * i);
             _Register_elements(scene, boomrange);
             quality2++;
-            while (power2 >= Obj->nextRange)
+            if (power2 == 2)
             {
                 if (!Obj->stopUp)
                 {
@@ -122,6 +135,7 @@ void Boom2_update(Elements *self)
         Obj->exploded = true;
         self->dele = true; // Mark the bomb for deletion
     }
+    
 }
 void _Boom2_update_position(Elements *self, int dx, int dy) {}
 void Boom2_interact(Elements *self, Elements *tar)
@@ -169,90 +183,8 @@ void Boom2_interact(Elements *self, Elements *tar)
     {
         Obstacle *obs = ((Obstacle *)(tar->pDerivedObj));
         
-        if(power2 >= Obj->nextRange) {
-            if (!Obj->stopUp){
-                int newY = Obj->y - 65.5 * Obj->nextRange;
-                Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
-                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
-                    Obj->stopUp = true;
-                free(Obj->hitbox2); 
-                }
-            }
-            if (!Obj->stopDown){
-                int newY = Obj->y + 65.5 * Obj->nextRange;
-                Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
-                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
-                    Obj->stopDown = true;
-                free(Obj->hitbox2); 
-                }
-            }
-            if (!Obj->stopRight){
-                int newX = Obj->x + 67.1 * Obj->nextRange;
-                Obj->hitbox2 = New_Rectangle(newX+4,Obj->y + 14,newX + 62.1,Obj->y + 64);
-                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
-                    Obj->stopRight = true;
-                free(Obj->hitbox2);  
-                }
-            }
-            if (!Obj->stopLeft){
-                int newX = Obj->x - 67.1 * Obj->nextRange;
-                Obj->hitbox2 = New_Rectangle(newX+4,Obj->y + 14,newX + 62.1,Obj->y + 64);
-                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
-                    Obj->stopLeft = true;
-                    free(Obj->hitbox2); 
-                }
-            }
-            
-        }
-        
-    }
-    else if (tar->label == Obstacle1_L)
-    {
-        Obstacle1 *obs = ((Obstacle1 *)(tar->pDerivedObj));
-        
-        if(power2 >= Obj->nextRange) {
-            if (!Obj->stopUp){
-                int newY = Obj->y - 65.5 * Obj->nextRange;
-                Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
-                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
-                    Obj->stopUp = true;
-                free(Obj->hitbox2); 
-                }
-            }
-            if (!Obj->stopDown){
-                int newY = Obj->y + 65.5 * Obj->nextRange;
-                Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
-                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
-                    Obj->stopDown = true;
-                free(Obj->hitbox2); 
-                }
-            }
-            if (!Obj->stopRight){
-                int newX = Obj->x + 67.1 * Obj->nextRange;
-                Obj->hitbox2 = New_Rectangle(newX+4,Obj->y + 14,newX + 62.1,Obj->y + 64);
-                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
-                    Obj->stopRight = true;
-                free(Obj->hitbox2);  
-                }
-            }
-            if (!Obj->stopLeft){
-                int newX = Obj->x - 67.1 * Obj->nextRange;
-                Obj->hitbox2 = New_Rectangle(newX+4,Obj->y + 14,newX + 62.1,Obj->y + 64);
-                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
-                    Obj->stopLeft = true;
-                    free(Obj->hitbox2); 
-                }
-            }
-            
-        }
-        
-    }
-    else if (tar->label == Boomrange_L)
-    {
-        Boomrange *obs = ((Boomrange *)(tar->pDerivedObj));
-        
-        if(power2>= Obj->nextRange) {
-            int new = Obj->nextRange + 1;
+        if(power2 == 2) {
+            int new = Obj->nextRange - 1;
             if (!Obj->stopUp){
                 int newY = Obj->y - 65.5 * new;
                 Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
@@ -289,16 +221,96 @@ void Boom2_interact(Elements *self, Elements *tar)
         }
         
     }
+    else if (tar->label == Obstacle1_L)
+    {
+        Obstacle1 *obs = ((Obstacle1 *)(tar->pDerivedObj));
+        
+        if(power2 == 2) {
+            int new = Obj->nextRange - 1;
+            if (!Obj->stopUp){
+                int newY = Obj->y - 65.5 * new;
+                Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
+                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
+                    Obj->stopUp = true;
+                free(Obj->hitbox2);
+                }
+            }
+            if (!Obj->stopDown){
+                int newY = Obj->y + 65.5 * new;
+                Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
+                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
+                    Obj->stopDown = true;
+                free(Obj->hitbox2); 
+                }
+            }
+            if (!Obj->stopRight){
+                int newX = Obj->x + 67.1 * new;
+                Obj->hitbox2 = New_Rectangle(newX+4,Obj->y + 14,newX + 62.1,Obj->y + 64);
+                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
+                    Obj->stopRight = true;
+                free(Obj->hitbox2);  
+                }
+            }
+            if (!Obj->stopLeft){
+                int newX = Obj->x - 67.1 * new;
+                Obj->hitbox2 = New_Rectangle(newX+4,Obj->y + 14,newX + 62.1,Obj->y + 64);
+                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
+                    Obj->stopLeft = true;
+                    free(Obj->hitbox2); 
+                }
+            }
+            
+        }
+        
+    }
+    else if (tar->label == Boomrange_L)
+    {
+        Boomrange *obs = ((Boomrange *)(tar->pDerivedObj));
+        
+        if(power2 == 2) {
+            int new = Obj->nextRange - 1;
+            if (!Obj->stopUp){
+                int newY = Obj->y - 65.5 * new;
+                Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
+                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
+                    Obj->stopUp = true;
+                free(Obj->hitbox2);
+                }
+            }
+            if (!Obj->stopDown){
+                int newY = Obj->y + 65.5 * new;
+                Obj->hitbox2 = New_Rectangle(Obj->x+4,newY + 14,Obj->x + 62.1,newY + 64);
+                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
+                    Obj->stopDown = true;
+                free(Obj->hitbox2); 
+                }
+            }
+            if (!Obj->stopRight){
+                int newX = Obj->x + 67.1 * new;
+                Obj->hitbox2 = New_Rectangle(newX+4,Obj->y + 14,newX + 62.1,Obj->y + 64);
+                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
+                    Obj->stopRight = true;
+                free(Obj->hitbox2);  
+                }
+            }
+            if (!Obj->stopLeft){
+                int newX = Obj->x - 67.1 * new;
+                Obj->hitbox2 = New_Rectangle(newX+4,Obj->y + 14,newX + 62.1,Obj->y + 64);
+                if (Obj->hitbox2->overlap(Obj->hitbox2, obs->hitbox)) {
+                    Obj->stopLeft = true;
+                free(Obj->hitbox2); 
+                }
+            }
+            
+        }
+        
+    }
 }
 void Boom2_draw(Elements *self)
 {
     Boom2 *Obj = ((Boom2 *)(self->pDerivedObj));
-    ALLEGRO_BITMAP *frame = algif_get_bitmap(Obj->img, al_get_time());
-    if (frame)
-    {
-        al_draw_bitmap(frame, Obj->x, Obj->y,0);
-    }
-
+    al_draw_bitmap(Obj->img, Obj->x, Obj->y, 0);
+    
     // al_draw_rectangle(Obj->x + 2,
     //                     Obj->y + 10,
     //                     Obj->x + 66.1,
@@ -309,8 +321,10 @@ void Boom2_destory(Elements *self)
 {
     Boom2 *Obj = ((Boom2 *)(self->pDerivedObj));
     //al_destroy_sample_instance(Obj->atk_Sound);
-    algif_destroy_animation(Obj->img);
+    al_destroy_bitmap(Obj->img);
+    al_destroy_bitmap(Obj->img2);
     al_destroy_timer(Obj->timer);
+    al_destroy_timer(Obj->timeegg);   
     free(Obj->hitbox);
     free(Obj->hitbox2);
     free(Obj);

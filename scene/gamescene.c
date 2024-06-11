@@ -1,5 +1,7 @@
 #include "gamescene.h"
 #include "../global.h"
+#include <allegro5/allegro_primitives.h>
+#include <stdbool.h>
 /*
    [GameScene function]
 */
@@ -9,6 +11,7 @@ Scene *New_GameScene(int label)
     Scene *pObj = New_Scene(label);
     // setting derived object member
     pDerivedObj->background = al_load_bitmap("assets/image/newmap.png");
+    pDerivedObj->black = al_load_bitmap("assets/image/blackback.png");
     pObj->pDerivedObj = pDerivedObj;
     // register element
     _Register_elements(pObj, New_Character2(Character2_L));
@@ -94,6 +97,7 @@ void game_scene_update(Scene *self)
             _Remove_elements(self, ele);
     }
     
+<<<<<<< HEAD
 }    
 ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
@@ -125,28 +129,25 @@ ElementVec allEle = _Get_all_elements(self);
     }
 }
 
+=======
+}
+>>>>>>> 760254b3f9d08bbe88544ae322e7867164d4381e
 void game_scene_draw(Scene *self)
 {    
-    static bool drawDeath = false;
-    static Elements *deadCharacter = NULL;
-
     GameScene *gs = ((GameScene *)(self->pDerivedObj));
     ElementVec allEle = _Get_all_elements(self);
-
-    // Check if any character is dead
-    if (!drawDeath) {
-        for (int i = 0; i < allEle.len; i++) {
+    bool di = false;
+    if(remain == 0 && !di) {
+        di = true;       
+        al_draw_bitmap(gs->black, 0, 0, 0); 
+        for (int i = 0; i < allEle.len; i++)
+        {
             Elements *ele = allEle.arr[i];
-            if (ele->label == Character_L || ele->label == Character2_L) {
-                Character *chara = (Character *)(ele->pDerivedObj);
-                if (chara->state == DIED) {
-                    drawDeath = true;
-                    deadCharacter = ele;
-                    break;
-                }
-            }
-        }
+            
+                ele->Draw(ele);
+        }      
     }
+<<<<<<< HEAD
 
     if (drawDeath) {
         // Draw black background
@@ -157,14 +158,46 @@ void game_scene_draw(Scene *self)
             deadCharacter->Draw(deadCharacter);
         }
     } else {
+=======
+    else if(remain2 == 0 && !di) {
+        di = true;       
+        al_draw_bitmap(gs->black, 0, 0, 0); 
+        for (int i = 0; i < allEle.len; i++)
+        {
+            Elements *ele = allEle.arr[i];
+            ele->Draw(ele);
+        }      
+    }
+    else {
+>>>>>>> 760254b3f9d08bbe88544ae322e7867164d4381e
         al_clear_to_color(al_map_rgb(0, 0, 0));
+        
         al_draw_bitmap(gs->background, 0, 0, 0);
+        
         for (int i = 0; i < allEle.len; i++)
         {
             Elements *ele = allEle.arr[i];
             ele->Draw(ele);
         }
     }
+
+    // if (drawDeath) {
+    //     // Draw black background
+    //     //al_draw_bitmap(gs->black, 0, 0, 0); 
+        
+    //     // Draw only the dead character
+    //     if (deadCharacter) {
+    //         deadCharacter->Draw(deadCharacter);
+    //     }
+    // } else {
+    //     al_clear_to_color(al_map_rgb(0, 0, 0));
+    //     al_draw_bitmap(gs->background, 0, 0, 0);
+    //     for (int i = 0; i < allEle.len; i++)
+    //     {
+    //         Elements *ele = allEle.arr[i];
+    //         ele->Draw(ele);
+    //     }
+    // }
 }
 
 void game_scene_destroy(Scene *self)
@@ -172,6 +205,7 @@ void game_scene_destroy(Scene *self)
     GameScene *Obj = ((GameScene *)(self->pDerivedObj));
     ALLEGRO_BITMAP *background = Obj->background;
     al_destroy_bitmap(background);
+    al_destroy_bitmap(Obj->black);
     ElementVec allEle = _Get_all_elements(self);
     for (int i = 0; i < allEle.len; i++)
     {

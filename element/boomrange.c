@@ -30,7 +30,15 @@ Elements *New_Boomrange(int label, int x, int y)
                                         pDerivedObj->x + 64.1,
                                         pDerivedObj->y + 62);
     pDerivedObj->timer = al_create_timer(0.28);
-    al_start_timer(pDerivedObj->timer);                                     
+    al_start_timer(pDerivedObj->timer);     
+    ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/contury1.wav");
+    pDerivedObj->remain_Sound = al_create_sample_instance(sample);
+    al_set_sample_instance_playmode(pDerivedObj->remain_Sound, ALLEGRO_PLAYMODE_ONCE);
+    al_attach_sample_instance_to_mixer(pDerivedObj->remain_Sound, al_get_default_mixer()); 
+    ALLEGRO_SAMPLE *sample2 = al_load_sample("assets/sound/godtonedie1.wav");
+    pDerivedObj->remain2_Sound = al_create_sample_instance(sample2);
+    al_set_sample_instance_playmode(pDerivedObj->remain2_Sound, ALLEGRO_PLAYMODE_ONCE);
+    al_attach_sample_instance_to_mixer(pDerivedObj->remain2_Sound, al_get_default_mixer());                                  
     // setting the interact object
     pObj->inter_obj[pObj->inter_len++] = Character_L;
     pObj->inter_obj[pObj->inter_len++] = Character2_L;
@@ -68,6 +76,7 @@ void Boomrange_interact(Elements *self, Elements *tar)
             remain--;
             chara->invincible = true;
             chara->invincible_start_time = al_get_time();
+            al_play_sample_instance(Obj->remain2_Sound);
             printf("Character hit! Remaining lives: %d\n", remain);
         }
     }
@@ -78,6 +87,7 @@ void Boomrange_interact(Elements *self, Elements *tar)
             remain2--;
             chara2->invincible = true;
             chara2->invincible_start_time = al_get_time();
+            al_play_sample_instance(Obj->remain_Sound);
             printf("Character hit! Remaining lives: %d\n", remain2);
         }
     }
@@ -133,6 +143,8 @@ void Boomrange_destory(Elements *self)
     
     al_destroy_bitmap(Obj->img);
     al_destroy_timer(Obj->timer);
+    al_destroy_sample_instance(Obj->remain_Sound);
+    al_destroy_sample_instance(Obj->remain2_Sound);
     free(Obj->hitbox);
     free(Obj);
     free(self);

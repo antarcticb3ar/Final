@@ -19,9 +19,10 @@ typedef struct _Boom2
     int newboom; 
     int nextRange;
     int soon;
+    bool newegg;
     bool exploded;
-    ALGIF_ANIMATION *img;
-    ALLEGRO_TIMER *timer;
+    ALLEGRO_BITMAP *img, *img2;
+    ALLEGRO_TIMER *timer, *timeegg;
     bool characteron1, characteron2;
     bool instant;
     bool stopRight, stopLeft, stopUp, stopDown;

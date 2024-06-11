@@ -3,6 +3,7 @@
 #include "obstacle.h"
 #include "obstacle1.h"
 #include "boarder.h"
+#include "boom.h"
 #include "boom2.h"
 #include "guidemap.h"
 #include "../scene/sceneManager.h"
@@ -26,11 +27,11 @@ Elements *New_Character2(int label)
     for (int i = 0; i < 4; i++)
     {
         char buffer[50];
-        sprintf(buffer, "assets/image/chara_%s.gif", state_string[i]);
+        sprintf(buffer, "assets/image/country_%s.gif", state_string[i]);
         pDerivedObj->gif_status[i] = algif_new_gif(buffer, -1);
     }
     // load effective soundW
-    ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/1ti1ti.wav");
+    ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/icebird.wav");
     pDerivedObj->atk_Sound = al_create_sample_instance(sample);
     al_set_sample_instance_playmode(pDerivedObj->atk_Sound, ALLEGRO_PLAYMODE_ONCE);
     al_attach_sample_instance_to_mixer(pDerivedObj->atk_Sound, al_get_default_mixer());
@@ -68,6 +69,7 @@ Elements *New_Character2(int label)
     pObj->inter_obj[pObj->inter_len++] = Obstacle1_L;
     pObj->inter_obj[pObj->inter_len++] = Boarder_L;
     pObj->inter_obj[pObj->inter_len++] = Boom2_L;
+    pObj->inter_obj[pObj->inter_len++] = Boom_L;
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
     pObj->Draw = Character2_draw;
@@ -157,7 +159,7 @@ void Character2_update(Elements *self)
             chara->dir = 2;
             chara->dir1 = false;
             if (!chara->needstop) { // 只有在不需要停止时才更新位置
-                _Character2_update_position(self, -speed2, 0);
+                _Character2_update_position(self, -speed1, 0);
             }
             if(chara->invincible) {
                 chara->state = DIED;
@@ -169,7 +171,7 @@ void Character2_update(Elements *self)
         {
             chara->dir = 1;
             if (!chara->needstop) {
-                _Character2_update_position(self, 0, speed2);
+                _Character2_update_position(self, 0, speed1);
             }
             if(chara->invincible) {
                 chara->state = DIED;
@@ -182,7 +184,7 @@ void Character2_update(Elements *self)
             chara->dir = 4;
             chara->dir1 = true;
             if (!chara->needstop) {
-                _Character2_update_position(self, 0, -speed2);
+                _Character2_update_position(self, 0, -speed1);
             }   
             if(chara->invincible) {
                 chara->state = DIED;
@@ -194,7 +196,7 @@ void Character2_update(Elements *self)
         {
             chara->dir = 3;
             if (!chara->needstop) {
-                _Character2_update_position(self, speed2, 0);
+                _Character2_update_position(self, speed1, 0);
             }    
             if(chara->invincible) {
                 chara->state = DIED;
@@ -222,12 +224,12 @@ void Character2_update(Elements *self)
         {
             chara->new_boom = true; 
             al_start_timer(chara->timer); 
-            Elements *boom;
-            boom = New_Boom2(Boom2_L,
+            Elements *boom2;
+            boom2 = New_Boom2(Boom2_L,
                                 chara->currentx + 3,
                                 chara->currenty - 6,
                                 3);          
-            _Register_elements(scene, boom); 
+            _Register_elements(scene, boom2); 
             quality2--;                      
             printf("%d\n", quality2);                      
         }
@@ -240,14 +242,14 @@ void Character2_update(Elements *self)
             chara->dir = 2;
             chara->dir1 = false;
             if (!chara->needstop) { // 只有在不需要停止时才更新位置
-                _Character2_update_position(self, -speed2, 0);
+                _Character2_update_position(self, -speed1, 0);
             }
         }
         else if (key_state[ALLEGRO_KEY_K])
         {
             chara->dir = 1;
             if (!chara->needstop) {
-                _Character2_update_position(self, 0, speed2);
+                _Character2_update_position(self, 0, speed1);
             }        
         }
         else if (key_state[ALLEGRO_KEY_I])
@@ -255,14 +257,14 @@ void Character2_update(Elements *self)
             chara->dir = 4;
             chara->dir1 = true;
             if (!chara->needstop) {
-                _Character2_update_position(self, 0, -speed2);
+                _Character2_update_position(self, 0, -speed1);
             }               
         }
         else if (key_state[ALLEGRO_KEY_L])
         {
             chara->dir = 3;
             if (!chara->needstop) {
-                _Character2_update_position(self, speed2, 0);
+                _Character2_update_position(self, speed1, 0);
             }        
         }
                  
@@ -279,14 +281,14 @@ void Character2_update(Elements *self)
                 chara->dir = 2;
                 chara->dir1 = false;
                 if (!chara->needstop) { // 只有在不需要停止时才更新位置
-                    _Character2_update_position(self, -speed2, 0);
+                    _Character2_update_position(self, -speed1, 0);
                 }
             }
             else if (key_state[ALLEGRO_KEY_K])
             {
                 chara->dir = 1;
                 if (!chara->needstop) {
-                    _Character2_update_position(self, 0, speed2);
+                    _Character2_update_position(self, 0, speed1);
                 }        
             }
             else if (key_state[ALLEGRO_KEY_I])
@@ -294,14 +296,14 @@ void Character2_update(Elements *self)
                 chara->dir = 4;
                 chara->dir1 = true;
                 if (!chara->needstop) {
-                    _Character2_update_position(self, 0, -speed2);
+                    _Character2_update_position(self, 0, -speed1);
                 }               
             }
             else if (key_state[ALLEGRO_KEY_L])
             {
                 chara->dir = 3;
                 if (!chara->needstop) {
-                    _Character2_update_position(self, speed2, 0);
+                    _Character2_update_position(self, speed1, 0);
                 }        
             }           
             else  {
@@ -367,29 +369,29 @@ void _Character2_update_position(Elements *self, int dx, int dy)
         {     
             if(chara->dir == 4) 
             {
-                chara->y += speed2;
-                chara->hitbox->update_center_y(chara->hitbox, speed2);
+                chara->y += speed1;
+                chara->hitbox->update_center_y(chara->hitbox, speed1);
                 chara->needstop = false; 
                 return;
             }
             else if(chara->dir == 3) 
             {
-                chara->x -= speed2;
-                chara->hitbox->update_center_x(chara->hitbox, -speed2);
+                chara->x -= speed1;
+                chara->hitbox->update_center_x(chara->hitbox, -speed1);
                 chara->needstop = false;   
                 return;
             }
             else if(chara->dir == 2) 
             {
-                chara->x += speed2;
-                chara->hitbox->update_center_x(chara->hitbox, speed2);
+                chara->x += speed1;
+                chara->hitbox->update_center_x(chara->hitbox, speed1);
                 chara->needstop = false;   
                 return;
             }
             else if(chara->dir == 1) 
             {
-                chara->y -= speed2;
-                chara->hitbox->update_center_y(chara->hitbox, -speed2);
+                chara->y -= speed1;
+                chara->hitbox->update_center_y(chara->hitbox, -speed1);
                 chara->needstop = false;   
                 return;
             }            
@@ -440,10 +442,33 @@ void _Character2_update_position(Elements *self, int dx, int dy)
 }
 
 void Character2_interact(Elements *self, Elements *tar) {
-    Character2 *obj = ((Character2 *)(self->pDerivedObj));       
+    Character2 *obj = ((Character2 *)(self->pDerivedObj));        
      if (tar->label == Boom2_L) 
     {
         Boom2 *boom = ((Boom2 *)(tar->pDerivedObj));
+        for(int i = 0; i < 3; i++) {
+            if(obj->needstop) {
+                // Adjust Character2's position
+                _Character2_update_position(self, 0, 0);
+                
+                // Check for collision again after adjustment
+                if (boom->hitbox->overlap(boom->hitbox, obj->hitbox)) {
+                    obj->needstop = true; // If collision still occurs, keep the Character2 stopped
+                } else {
+                    obj->needstop = false; // If collision resolved, resume Character2's movement
+                }
+                
+                // Return after adjusting position and resolving collision
+                return;
+            } else {
+                // If no collision, break out of the loop
+                break;
+            }
+        }
+    }
+    else if (tar->label == Boom_L) 
+    {
+        Boom *boom = ((Boom *)(tar->pDerivedObj));
         for(int i = 0; i < 3; i++) {
             if(obj->needstop) {
                 // Adjust Character2's position

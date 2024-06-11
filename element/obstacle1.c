@@ -40,7 +40,7 @@ Elements *New_Obstacle1(int label, int x, int y)
 void Obstacle1_update(Elements *self) {
     Obstacle1 *Obj = ((Obstacle1 *)(self->pDerivedObj));
 
-    Obj->random = rand() % 5; // 生成隨機數
+    Obj->random = rand() % 4; // 生成隨機數
 }
 void Obstacle1_interact(Elements *self, Elements *tar) {
     Obstacle1 *Obj = ((Obstacle1 *)(self->pDerivedObj));
